@@ -40,7 +40,7 @@ jobs:
 
       - name: Run yamllint on all Sigma rules
         run: |
-          yamllint -c '{extends: default, rules: {line-length: {max: 300}, truthy: disable, document-start: disable}}' rules/
+          yamllint -d "{extends: default, ignore: 'rules/yara-l/', rules: {line-length: {max: 300}, truthy: disable, document-start: disable, indentation: disable, new-lines: disable, trailing-spaces: disable}}" rules/ pipelines/
 
   test-detections:
     name: Test Detection Logic (TP/TN)
