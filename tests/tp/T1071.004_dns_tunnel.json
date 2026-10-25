@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "0e8de06d-bcf0-4850-b576-7678902ec2c7",
+  "id": "9787b53d-30ca-4c6b-a6ea-fc18900ed111",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "16515"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "94240"
       },
       "eventdata": {
         "image": "C:\\Users\\redteam\\Tools\\dnscat2.exe",

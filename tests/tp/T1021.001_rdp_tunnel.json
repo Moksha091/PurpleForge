@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "b41d84f4-f520-4582-9566-e31acdb0d4ac",
+  "id": "49ea6b73-fb1f-46ed-a3f3-d0b8d3e8146c",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "73988"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "96044"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\netsh.exe",

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "f3989528-cb0b-4fb6-89c1-d5ceabe32f93",
+  "id": "82b0cc20-23c9-405a-88ef-513683a9545f",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "11547"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "12673"
       },
       "eventdata": {
         "image": "C:\\Users\\redteam\\Desktop\\implant.exe",

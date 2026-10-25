@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "9ef087bd-3e38-42e2-8c99-c649d73cc6bd",
+  "id": "5fe1b523-edb7-40a8-b0ed-ec40860b9fea",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "17560"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "29492"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\rundll32.exe",

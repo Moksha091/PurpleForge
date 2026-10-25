@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "44deba84-c180-4021-9c28-dd044b18f1c8",
+  "id": "79ea1cff-6d0f-4e37-a684-95dbe7a37d27",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "28576"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "8538"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\whoami.exe",

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "a7d30c8b-4d18-4068-9d39-63dce28864eb",
+  "id": "7f11dc67-0a30-4257-8133-8bdfd873a819",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "71891"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "61498"
       },
       "eventdata": {
         "image": "C:\\Users\\redteam\\Tools\\PrintSpoofer.exe",

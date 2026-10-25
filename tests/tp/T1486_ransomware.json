@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "90407ba3-de56-4b13-a324-7e76c502e05c",
+  "id": "afa43892-6859-4c1a-a700-c708bd33d633",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "18374"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "48245"
       },
       "eventdata": {
         "image": "C:\\Users\\redteam\\Tools\\ransomware_sim.exe",

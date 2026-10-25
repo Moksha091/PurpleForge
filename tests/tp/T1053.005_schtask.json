@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "55e10ebc-bb56-4daa-a800-6f8de98976d2",
+  "id": "b0d8f4ed-3a4a-460b-89c6-60145b42f510",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "95012"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "10604"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\schtasks.exe",

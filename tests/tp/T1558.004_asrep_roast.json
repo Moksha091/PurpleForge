@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "78e24c83-5f73-472a-9ff7-c8f78493a152",
+  "id": "3de84bbb-ba7d-438b-8dd6-bb058e2719f2",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Security",
         "computer": "DC01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "80282"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "64289"
       },
       "eventdata": {
         "user": "svc_backup",

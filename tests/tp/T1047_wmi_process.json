@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T06:16:08.000Z",
+  "timestamp": "2026-10-25T08:07:46.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "511f99b7-e24b-4073-987a-e94639ef1bd3",
+  "id": "4a68f797-ddf1-4cf6-9074-9d60f3fb30c2",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T06:16:08.000Z",
-        "eventRecordID": "65868"
+        "systemTime": "2026-10-25T08:07:46.000Z",
+        "eventRecordID": "92788"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\wbem\\wmic.exe",
