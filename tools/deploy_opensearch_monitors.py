@@ -55,25 +55,66 @@ def get_client():
 
 
 def compile_sigma_rule(rule_path):
-    """Compile Sigma rule to OpenSearch DSL query."""
+    """Compile Sigma rule to OpenSearch Lucene query."""
+    import tempfile
+    
+    with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as tf:
+        out_path = tf.name
+
+    cmd = [
+        "sigma", "convert",
+        "-t", "opensearch_lucene",
+        "-p", PIPELINE_PATH,
+        "-o", out_path,
+        rule_path,
+    ]
     try:
-        result = subprocess.run(
-            [
-                sys.executable, "-m", "sigma", "convert",
-                "-t", "opensearch",
-                "-p", PIPELINE_PATH,
-                "-f", "json",
-                "--without-pipeline",
-                rule_path,
-            ],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
-        if result.returncode == 0:
-            return json.loads(result.stdout.strip()), None
-        return None, result.stderr.strip()
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if result.returncode == 0 and os.path.exists(out_path):
+            with open(out_path, "r", encoding="utf-8") as f:
+                query = f.read().strip()
+            try:
+                os.remove(out_path)
+            except Exception:
+                pass
+            return query, None
+        else:
+            try:
+                os.remove(out_path)
+            except Exception:
+                pass
+            return None, (result.stderr.strip() or result.stdout.strip())
+    except FileNotFoundError:
+        try:
+            cmd = [
+                sys.executable, "-m", "sigma_cli.entrypoint", "convert",
+                "-t", "opensearch_lucene", "-p", PIPELINE_PATH, "-o", out_path, rule_path
+            ]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            if result.returncode == 0 and os.path.exists(out_path):
+                with open(out_path, "r", encoding="utf-8") as f:
+                    query = f.read().strip()
+                try:
+                    os.remove(out_path)
+                except Exception:
+                    pass
+                return query, None
+            try:
+                os.remove(out_path)
+            except Exception:
+                pass
+            return None, result.stderr.strip()
+        except Exception as e:
+            try:
+                os.remove(out_path)
+            except Exception:
+                pass
+            return None, str(e)
     except Exception as e:
+        try:
+            os.remove(out_path)
+        except Exception:
+            pass
         return None, str(e)
 
 
