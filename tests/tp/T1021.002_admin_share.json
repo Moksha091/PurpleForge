@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-10-25T06:16:08.000Z",
+  "rule": {
+    "level": 0,
+    "description": "Test event"
+  },
+  "agent": {
+    "id": "001",
+    "name": "WS01",
+    "ip": "10.10.10.20"
+  },
+  "manager": {
+    "name": "wazuh-manager"
+  },
+  "id": "7d9305b4-02aa-463d-a493-9c99f18c73d3",
+  "data": {
+    "win": {
+      "system": {
+        "eventID": "11",
+        "channel": "Microsoft-Windows-Sysmon/Operational",
+        "computer": "WS01.corp.purpleforge.local",
+        "providerName": "Microsoft-Windows-Sysmon",
+        "systemTime": "2026-10-25T06:16:08.000Z",
+        "eventRecordID": "84920"
+      },
+      "eventdata": {
+        "image": "C:\\Windows\\System32\\svchost.exe",
+        "user": "CORP\\redteam",
+        "targetFilename": "C:\\Windows\\PSEXESVC.exe",
+        "shareName": "ADMIN$"
+      }
+    }
+  }
+}

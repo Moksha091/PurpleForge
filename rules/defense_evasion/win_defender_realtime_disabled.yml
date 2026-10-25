@@ -1,0 +1,61 @@
+title: Windows Defender Real-Time Protection Disabled
+id: a9d5cf97-2ae0-4fb5-e6b3-9c0d1e4f5a6b
+status: stable
+description: |
+  Detects attempts to disable Windows Defender real-time protection via
+  Set-MpPreference, registry modification, or sc.exe stop. Adversaries
+  disable Defender to prevent detection of malicious tools and payloads.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.defense_evasion
+  - attack.t1562.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_powershell_disable:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains:
+      - 'Set-MpPreference'
+      - 'DisableRealtimeMonitoring'
+      - 'DisableBehaviorMonitoring'
+      - 'DisableIOAVProtection'
+      - 'DisableIntrusionPreventionSystem'
+  selection_sc_disable:
+    Image|endswith: '\sc.exe'
+    CommandLine|contains:
+      - 'stop WinDefend'
+      - 'disable WinDefend'
+      - 'stop MpsSvc'
+  selection_reg_disable:
+    Image|endswith: '\reg.exe'
+    CommandLine|contains:
+      - 'DisableAntiSpyware'
+      - 'DisableRealtimeMonitoring'
+    CommandLine|contains:
+      - 'DWORD'
+      - '0x1'
+      - '/d 1'
+  filter_gpo_application:
+    ParentImage|endswith: '\gpscript.exe'
+  filter_intune_management:
+    ParentImage|endswith:
+      - '\IntuneManagementExtension.exe'
+      - '\AgentExecutor.exe'
+  condition: (selection_powershell_disable or selection_sc_disable or selection_reg_disable) and not filter_gpo_application and not filter_intune_management
+falsepositives:
+  - Group Policy applying Defender configuration
+  - Intune/MDM management policies
+  - Developers temporarily disabling Defender for build performance
+level: high
+custom:
+  mitre_technique: T1562.001
+  mitre_tactic: defense_evasion
+  tp_file: tests/tp/T1562.001_defender_disabled.json
+  tuning_notes: >
+    Excluded GPO script application and Intune management extensions that
+    legitimately configure Defender settings. Interactive or script-driven
+    Defender disablement warrants immediate investigation.

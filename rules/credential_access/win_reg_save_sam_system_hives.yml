@@ -1,0 +1,42 @@
+title: Registry Save of SAM/SYSTEM Hives for Credential Extraction
+id: c9f5eb9d-2ca5-4bd0-a6d3-9e0f1a4b5c6d
+status: stable
+description: |
+  Detects usage of reg.exe save to export SAM, SYSTEM, or SECURITY registry
+  hives to disk for offline credential extraction. Adversaries extract these
+  hives to crack password hashes with tools like secretsdump.py.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.credential_access
+  - attack.t1003.002
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_reg_save:
+    Image|endswith: '\reg.exe'
+    CommandLine|contains: 'save'
+  selection_hive:
+    CommandLine|contains:
+      - 'hklm\sam'
+      - 'hklm\system'
+      - 'hklm\security'
+      - 'HKLM\SAM'
+      - 'HKLM\SYSTEM'
+      - 'HKLM\SECURITY'
+  filter_backup_scripts:
+    ParentImage|endswith: '\backupexec.exe'
+  condition: selection_reg_save and selection_hive and not filter_backup_scripts
+falsepositives:
+  - Backup Exec or other backup software exporting registry hives
+  - IT disaster recovery procedures (should be rare and audited)
+level: critical
+custom:
+  mitre_technique: T1003.002
+  mitre_tactic: credential_access
+  tp_file: tests/tp/T1003.002_reg_save_sam.json
+  tuning_notes: >
+    Excluded backup software (BackupExec). Registry hive export of SAM/SYSTEM
+    is almost never legitimate on endpoints and warrants critical severity.
+    Case-insensitive matching covers both uppercase and lowercase variants.

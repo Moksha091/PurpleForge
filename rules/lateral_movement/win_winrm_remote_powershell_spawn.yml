@@ -1,0 +1,56 @@
+title: WinRM Remote PowerShell Session Spawn
+id: c5f1eb53-8ca6-4bd1-a2d9-5e6f7a0b1c2d
+status: stable
+description: |
+  Detects remote PowerShell sessions spawned via WinRM (wsmprovhost.exe parent),
+  commonly used for lateral movement. Monitors for suspicious child processes
+  spawned from the WinRM service host.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.lateral_movement
+  - attack.t1021.006
+  - attack.execution
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_winrm_parent:
+    ParentImage|endswith: '\wsmprovhost.exe'
+  selection_suspicious_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\cscript.exe'
+      - '\wscript.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+      - '\regsvr32.exe'
+      - '\net.exe'
+      - '\net1.exe'
+      - '\whoami.exe'
+  filter_dsc_configuration:
+    CommandLine|contains:
+      - 'DSC'
+      - 'DesiredStateConfiguration'
+      - 'Start-DscConfiguration'
+  filter_exchange_management:
+    CommandLine|contains:
+      - 'Exchange'
+      - 'Get-Mailbox'
+      - 'Get-TransportRule'
+  condition: selection_winrm_parent and selection_suspicious_child and not filter_dsc_configuration and not filter_exchange_management
+falsepositives:
+  - DSC (Desired State Configuration) push/pull operations
+  - Exchange Management Shell remote sessions
+  - Legitimate IT automation via WinRM (Ansible, Puppet)
+level: high
+custom:
+  mitre_technique: T1021.006
+  mitre_tactic: lateral_movement
+  tp_file: tests/tp/T1021.006_winrm.json
+  tuning_notes: >
+    Excluded DSC configuration management and Exchange Management Shell which
+    legitimately spawn processes through WinRM. wsmprovhost.exe spawning
+    reconnaissance or LOLBin processes outside these contexts is suspicious.

@@ -1,0 +1,42 @@
+title: PsExec Service Installation via SMB
+id: a3d9cf31-6ae4-4fb9-e0b7-3c4d5e8f9a0b
+status: stable
+description: |
+  Detects installation of the PSEXESVC service on a remote system, a hallmark
+  of PsExec-based lateral movement. Also detects similar service installations
+  (PAExec, CSExec, RemCom) used by alternative PsExec implementations.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.lateral_movement
+  - attack.t1021.002
+  - attack.execution
+logsource:
+  product: windows
+  service: system
+detection:
+  selection_service_install:
+    EventID: 7045
+    ServiceName|contains:
+      - 'PSEXESVC'
+      - 'PAExec'
+      - 'CSExec'
+      - 'RemCom'
+      - 'winexesvc'
+  filter_legitimate_admin_tools:
+    ServiceName|contains:
+      - 'SolarWinds'
+      - 'PDQDeploy'
+  condition: selection_service_install and not filter_legitimate_admin_tools
+falsepositives:
+  - SolarWinds Dameware remote administration
+  - PDQ Deploy software deployment
+level: critical
+custom:
+  mitre_technique: T1021.002
+  mitre_tactic: lateral_movement
+  tp_file: tests/tp/T1021.002_psexec.json
+  tuning_notes: >
+    Excluded SolarWinds and PDQ Deploy administrative service installations.
+    PSEXESVC and variants are strong indicators of PsExec lateral movement.
+    Critical severity due to direct remote code execution capability.

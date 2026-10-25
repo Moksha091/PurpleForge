@@ -1,0 +1,34 @@
+title: Security Event Log Cleared
+id: e7b3ad75-0ec8-4df3-c4f1-7a8b9c2d3e4f
+status: stable
+description: |
+  Detects clearing of Windows Security event log (Event ID 1102). Adversaries
+  clear security logs to remove evidence of their activities. This is a
+  high-fidelity indicator rarely seen in normal operations.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.defense_evasion
+  - attack.t1070.001
+logsource:
+  product: windows
+  service: security
+detection:
+  selection_log_cleared:
+    EventID: 1102
+  filter_system_maintenance:
+    User: 'NT AUTHORITY\SYSTEM'
+    CommandLine|contains: 'wevtutil cl'
+  condition: selection_log_cleared and not filter_system_maintenance
+falsepositives:
+  - System administrators performing scheduled log rotation (rare on endpoints)
+  - Automated log management tools clearing logs after archival
+level: critical
+custom:
+  mitre_technique: T1070.001
+  mitre_tactic: defense_evasion
+  tp_file: tests/tp/T1070.001_eventlog_cleared.json
+  tuning_notes: >
+    Only filtered SYSTEM account scheduled maintenance. Security log clearing
+    is extremely rare in production and almost always malicious. Critical
+    severity ensures immediate SOC investigation.

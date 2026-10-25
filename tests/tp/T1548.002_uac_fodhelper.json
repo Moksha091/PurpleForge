@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-10-25T06:16:08.000Z",
+  "rule": {
+    "level": 0,
+    "description": "Test event"
+  },
+  "agent": {
+    "id": "001",
+    "name": "WS01",
+    "ip": "10.10.10.20"
+  },
+  "manager": {
+    "name": "wazuh-manager"
+  },
+  "id": "b92e6254-a07e-48d8-b08b-573beff6fcf2",
+  "data": {
+    "win": {
+      "system": {
+        "eventID": "1",
+        "channel": "Microsoft-Windows-Sysmon/Operational",
+        "computer": "WS01.corp.purpleforge.local",
+        "providerName": "Microsoft-Windows-Sysmon",
+        "systemTime": "2026-10-25T06:16:08.000Z",
+        "eventRecordID": "60309"
+      },
+      "eventdata": {
+        "image": "C:\\Windows\\System32\\cmd.exe",
+        "commandLine": "cmd.exe /c powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Temp\\payload.ps1",
+        "parentImage": "C:\\Windows\\System32\\fodhelper.exe",
+        "user": "CORP\\redteam"
+      }
+    }
+  }
+}

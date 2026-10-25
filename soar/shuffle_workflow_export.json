@@ -1,0 +1,167 @@
+{
+  "name": "PurpleForge - Automated Triage, Enrichment & Active Response",
+  "description": "Closed-loop SOAR workflow receiving OpenSearch DaC alerts, enriching IOCs via VirusTotal, AbuseIPDB, and Shodan, computing composite risk score, executing Slack/Discord analyst approval gate, isolating infected endpoint via Wazuh Active Response, and opening DFIR-IRIS case.",
+  "status": "active",
+  "version": "1.0.0",
+  "sharing": "private",
+  "triggers": [
+    {
+      "id": "trigger_webhook_opensearch",
+      "name": "OpenSearch Alert Webhook Trigger",
+      "type": "webhook",
+      "path": "/api/v1/hooks/webhook_purpleforge_alert",
+      "method": "POST",
+      "parameters": [
+        {
+          "name": "body",
+          "example": "{\"monitor_name\": \"PurpleForge - T1003.001 LSASS Dump\", \"agent_id\": \"001\", \"computer\": \"WS01.corp.purpleforge.local\", \"ip\": \"10.10.10.20\", \"ioc_hash\": \"44d88612fea8a8f36de82e1278abb02f\", \"dst_ip\": \"198.51.100.45\", \"technique_id\": \"T1003.001\", \"event_time\": \"2026-10-25T03:10:00Z\"}"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "node_normalize_payload",
+      "label": "Normalize Alert Telemetry",
+      "name": "normalize_telemetry",
+      "app_name": "Shuffle Tools",
+      "app_version": "1.2.0",
+      "environment": "Shuffle",
+      "position": { "x": 300, "y": 200 },
+      "parameters": [
+        { "name": "input_json", "value": "$trigger_webhook_opensearch.body" }
+      ]
+    },
+    {
+      "id": "node_virustotal_enrich",
+      "label": "VirusTotal Hash / URL Lookup",
+      "name": "virustotal_v3_lookup",
+      "app_name": "VirusTotal",
+      "app_version": "2.0.0",
+      "environment": "Shuffle",
+      "position": { "x": 550, "y": 100 },
+      "parameters": [
+        { "name": "apikey", "value": "{{env.VIRUSTOTAL_API_KEY}}" },
+        { "name": "target", "value": "$node_normalize_payload.ioc_hash" }
+      ]
+    },
+    {
+      "id": "node_abuseipdb_enrich",
+      "label": "AbuseIPDB IP Reputation",
+      "name": "abuseipdb_check_ip",
+      "app_name": "AbuseIPDB",
+      "app_version": "1.1.0",
+      "environment": "Shuffle",
+      "position": { "x": 550, "y": 250 },
+      "parameters": [
+        { "name": "apikey", "value": "{{env.ABUSEIPDB_API_KEY}}" },
+        { "name": "ipAddress", "value": "$node_normalize_payload.dst_ip" },
+        { "name": "maxAgeInDays", "value": "90" }
+      ]
+    },
+    {
+      "id": "node_shodan_enrich",
+      "label": "Shodan Host & Port Intelligence",
+      "name": "shodan_host_search",
+      "app_name": "Shodan",
+      "app_version": "1.0.0",
+      "environment": "Shuffle",
+      "position": { "x": 550, "y": 400 },
+      "parameters": [
+        { "name": "apikey", "value": "{{env.SHODAN_API_KEY}}" },
+        { "name": "ip", "value": "$node_normalize_payload.dst_ip" }
+      ]
+    },
+    {
+      "id": "node_calculate_risk_score",
+      "label": "Calculate Weighted Risk Score",
+      "name": "risk_score_evaluator",
+      "app_name": "PurpleForge Risk Engine",
+      "app_version": "1.0.0",
+      "environment": "Shuffle",
+      "position": { "x": 800, "y": 250 },
+      "parameters": [
+        { "name": "base_score", "value": "$node_normalize_payload.rule_severity_score" },
+        { "name": "vt_malicious_count", "value": "$node_virustotal_enrich.data.attributes.last_analysis_stats.malicious" },
+        { "name": "abuseipdb_confidence", "value": "$node_abuseipdb_enrich.data.abuseConfidenceScore" },
+        { "name": "shodan_open_ports", "value": "$node_shodan_enrich.ports" }
+      ]
+    },
+    {
+      "id": "node_approval_gate",
+      "label": "Analyst Approval Gate (Slack/Discord)",
+      "name": "interactive_prompt",
+      "app_name": "Shuffle Approval Gate",
+      "app_version": "1.0.0",
+      "environment": "Shuffle",
+      "position": { "x": 1050, "y": 250 },
+      "parameters": [
+        { "name": "webhook_url", "value": "{{env.SOAR_NOTIFICATION_WEBHOOK}}" },
+        { "name": "timeout_seconds", "value": 300 },
+        { "name": "prompt_message", "value": "CRITICAL PURPLEFORGE ALERT: Technique $node_normalize_payload.technique_id detected on host $node_normalize_payload.computer. Risk Score: $node_calculate_risk_score.final_score / 100. Approve automated host isolation via Windows Firewall?" }
+      ]
+    },
+    {
+      "id": "node_wazuh_isolate",
+      "label": "Wazuh Active Response: Isolate Host",
+      "name": "execute_active_response",
+      "app_name": "Wazuh API",
+      "app_version": "4.7.0",
+      "environment": "Shuffle",
+      "position": { "x": 1300, "y": 150 },
+      "conditions": [
+        {
+          "field": "$node_approval_gate.action_selected",
+          "operator": "EQUALS",
+          "value": "APPROVE"
+        }
+      ],
+      "parameters": [
+        { "name": "agent_id", "value": "$node_normalize_payload.agent_id" },
+        { "name": "command", "value": "custom_active_response_isolate.cmd" },
+        { "name": "arguments", "value": "add" }
+      ]
+    },
+    {
+      "id": "node_dfir_iris_case",
+      "label": "Create DFIR-IRIS Incident Case",
+      "name": "iris_create_case",
+      "app_name": "DFIR-IRIS",
+      "app_version": "2.4.0",
+      "environment": "Shuffle",
+      "position": { "x": 1300, "y": 300 },
+      "parameters": [
+        { "name": "case_title", "value": "PurpleForge Auto-Incident: $node_normalize_payload.technique_id on $node_normalize_payload.computer" },
+        { "name": "case_description", "value": "Automated detection triggered by OpenSearch monitor. Host isolated. Risk score: $node_calculate_risk_score.final_score." },
+        { "name": "case_severity", "value": "$node_calculate_risk_score.severity_level" }
+      ]
+    },
+    {
+      "id": "node_misp_push",
+      "label": "Push Indicators to MISP",
+      "name": "misp_add_event",
+      "app_name": "MISP",
+      "app_version": "2.4.0",
+      "environment": "Shuffle",
+      "position": { "x": 1300, "y": 450 },
+      "parameters": [
+        { "name": "info", "value": "PurpleForge IOC Collection: $node_normalize_payload.technique_id" },
+        { "name": "attribute_hash", "value": "$node_normalize_payload.ioc_hash" },
+        { "name": "attribute_ip", "value": "$node_normalize_payload.dst_ip" }
+      ]
+    }
+  ],
+  "links": [
+    { "source": "trigger_webhook_opensearch", "target": "node_normalize_payload" },
+    { "source": "node_normalize_payload", "target": "node_virustotal_enrich" },
+    { "source": "node_normalize_payload", "target": "node_abuseipdb_enrich" },
+    { "source": "node_normalize_payload", "target": "node_shodan_enrich" },
+    { "source": "node_virustotal_enrich", "target": "node_calculate_risk_score" },
+    { "source": "node_abuseipdb_enrich", "target": "node_calculate_risk_score" },
+    { "source": "node_shodan_enrich", "target": "node_calculate_risk_score" },
+    { "source": "node_calculate_risk_score", "target": "node_approval_gate" },
+    { "source": "node_approval_gate", "target": "node_wazuh_isolate" },
+    { "source": "node_approval_gate", "target": "node_dfir_iris_case" },
+    { "source": "node_approval_gate", "target": "node_misp_push" }
+  ]
+}

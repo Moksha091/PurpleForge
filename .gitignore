@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables & local secrets
+.env
+!.env.example
+
+# Large forensics & memory triage dumps
+*.dmp
+*.raw
+*.vhdx
+*.vhd
+*.iso
+/dfir/*.raw
+/dfir/*.dmp
+
+# OS artifacts
+Thumbs.db
+[Dd]esktop.ini
+.DS_Store
+
+# Temporary files
+*.tmp
+*.log

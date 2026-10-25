@@ -1,0 +1,53 @@
+title: Token Impersonation with SeDebugPrivilege or SeImpersonatePrivilege
+id: f6c2be6a-9fd2-4ea7-d3a0-6b7c8d1e2f3a
+status: stable
+description: |
+  Detects processes enabling SeDebugPrivilege or SeImpersonatePrivilege tokens
+  commonly used in privilege escalation via token impersonation (Potato attacks,
+  Incognito, PrintSpoofer). Monitors Sysmon Event ID 10 for suspicious privilege
+  escalation patterns.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.privilege_escalation
+  - attack.t1134.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_priv_tools:
+    Image|endswith:
+      - '\JuicyPotato.exe'
+      - '\PrintSpoofer.exe'
+      - '\GodPotato.exe'
+      - '\SweetPotato.exe'
+      - '\SharpUp.exe'
+      - '\Rubeus.exe'
+  selection_priv_commands:
+    CommandLine|contains:
+      - 'SeDebugPrivilege'
+      - 'SeImpersonatePrivilege'
+      - 'EnableAllTokenPrivs'
+      - 'incognito'
+      - 'impersonate_token'
+      - 'GetSystem'
+  filter_defender_scan:
+    Image|endswith:
+      - '\MsMpEng.exe'
+      - '\MpCmdRun.exe'
+  filter_system_svchost:
+    Image|endswith: '\svchost.exe'
+    User: 'NT AUTHORITY\SYSTEM'
+  condition: (selection_priv_tools or selection_priv_commands) and not filter_defender_scan and not filter_system_svchost
+falsepositives:
+  - Windows Defender scanning processes
+  - SYSTEM-level svchost service operations
+level: critical
+custom:
+  mitre_technique: T1134.001
+  mitre_tactic: privilege_escalation
+  tp_file: tests/tp/T1134.001_token_impersonation.json
+  tuning_notes: >
+    Excluded Defender and SYSTEM svchost operations. Named tools (JuicyPotato,
+    PrintSpoofer, etc.) provide strong signal even without command-line analysis.
+    Command-line keywords catch Meterpreter and CobaltStrike commands.

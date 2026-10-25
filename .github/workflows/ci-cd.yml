@@ -1,0 +1,148 @@
+name: PurpleForge CI/CD — Detection-as-Code Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'rules/**'
+      - 'pipelines/**'
+      - 'tests/**'
+      - 'tools/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'rules/**'
+      - 'pipelines/**'
+      - 'tests/**'
+      - 'tools/**'
+  workflow_dispatch:
+
+env:
+  OPENSEARCH_URL: https://localhost:9200
+  OPENSEARCH_USER: admin
+  OPENSEARCH_PASS: ${{ secrets.OPENSEARCH_PASS }}
+
+jobs:
+  lint-rules:
+    name: Lint Sigma Rules (yamllint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run yamllint on all Sigma rules
+        run: |
+          yamllint -c '{extends: default, rules: {line-length: {max: 300}, truthy: disable, document-start: disable}}' rules/
+
+  test-detections:
+    name: Test Detection Logic (TP/TN)
+    needs: lint-rules
+    runs-on: ubuntu-latest
+    services:
+      opensearch:
+        image: opensearchproject/opensearch:2.11.1
+        ports:
+          - 9200:9200
+        env:
+          discovery.type: single-node
+          DISABLE_SECURITY_PLUGIN: "true"
+          OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+        options: >-
+          --health-cmd "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\\|yellow\"'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Wait for OpenSearch to be healthy
+        run: |
+          echo "Waiting for OpenSearch..."
+          for i in $(seq 1 30); do
+            if curl -s http://localhost:9200/_cluster/health | grep -q '"status"'; then
+              echo "OpenSearch is ready!"
+              break
+            fi
+            echo "Attempt $i/30..."
+            sleep 5
+          done
+
+      - name: Seed test logs
+        run: python tools/seed_test_logs.py
+
+      - name: Run detection tests
+        env:
+          OPENSEARCH_URL: http://localhost:9200
+          OPENSEARCH_USER: ""
+          OPENSEARCH_PASS: ""
+        run: python tools/test_runner.py
+
+  generate-artifacts:
+    name: Generate Navigator Layer & Metrics
+    needs: test-detections
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Seed test logs (for metrics context)
+        run: python tools/seed_test_logs.py
+
+      - name: Generate ATT&CK Navigator Layer
+        run: python tools/generate_navigator.py
+
+      - name: Upload Navigator Layer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: attack-navigator-layer
+          path: attack_navigator_layer.json
+
+  deploy-monitors:
+    name: Deploy OpenSearch Monitors
+    needs: test-detections
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Deploy monitors to production OpenSearch
+        env:
+          OPENSEARCH_URL: ${{ secrets.PROD_OPENSEARCH_URL }}
+          OPENSEARCH_USER: ${{ secrets.PROD_OPENSEARCH_USER }}
+          OPENSEARCH_PASS: ${{ secrets.PROD_OPENSEARCH_PASS }}
+          SHUFFLE_WEBHOOK_URL: ${{ secrets.SHUFFLE_WEBHOOK_URL }}
+        run: python tools/deploy_opensearch_monitors.py

@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-10-25T06:16:08.000Z",
+  "rule": {
+    "level": 0,
+    "description": "Test event"
+  },
+  "agent": {
+    "id": "001",
+    "name": "WS01",
+    "ip": "10.10.10.20"
+  },
+  "manager": {
+    "name": "wazuh-manager"
+  },
+  "id": "dc3bb214-d6f7-4de8-8978-750a9577232b",
+  "data": {
+    "win": {
+      "system": {
+        "eventID": "4769",
+        "channel": "Security",
+        "computer": "DC01.corp.purpleforge.local",
+        "providerName": "Microsoft-Windows-Sysmon",
+        "systemTime": "2026-10-25T06:16:08.000Z",
+        "eventRecordID": "50779"
+      },
+      "eventdata": {
+        "user": "CORP\\redteam",
+        "ticketEncryptionType": "0x17",
+        "serviceName": "MSSQLSvc/sql01.corp.purpleforge.local:1433"
+      }
+    }
+  }
+}

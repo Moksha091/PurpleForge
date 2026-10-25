@@ -1,0 +1,45 @@
+title: AMSI Bypass via Reflection
+id: b0e6da08-3bf1-4ac6-f7c4-0d1e2f5a6b7c
+status: stable
+description: |
+  Detects AMSI (Antimalware Scan Interface) bypass attempts using .NET reflection
+  to set amsiInitFailed or patch AmsiScanBuffer. Adversaries use these techniques
+  to disable AMSI scanning in PowerShell sessions before loading malicious scripts.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.defense_evasion
+  - attack.t1562.001
+logsource:
+  product: windows
+  service: powershell
+detection:
+  selection_amsi_bypass:
+    EventID: 4104
+    ScriptBlockText|contains:
+      - 'amsiInitFailed'
+      - 'AmsiScanBuffer'
+      - 'amsiContext'
+      - 'AmsiUtils'
+      - 'Amsi.dll'
+      - 'System.Management.Automation.AmsiUtils'
+      - '[Ref].Assembly.GetType'
+      - 'SetValue($null,$true)'
+      - 'NonPublic,Static'
+  filter_defender_definitions:
+    ScriptBlockText|contains:
+      - 'Test-AMSIDetection'
+      - 'Get-MpPreference'
+  condition: selection_amsi_bypass and not filter_defender_definitions
+falsepositives:
+  - Security testing tools validating AMSI functionality
+  - Defender preference queries mentioning AMSI keywords
+level: critical
+custom:
+  mitre_technique: T1562.001
+  mitre_tactic: defense_evasion
+  tp_file: tests/tp/T1562.001_amsi_bypass.json
+  tuning_notes: >
+    Excluded legitimate AMSI testing scripts. AMSI bypass via reflection is
+    a well-known technique used by nearly all modern PowerShell-based attack
+    frameworks (Covenant, Empire, CobaltStrike). Critical severity.

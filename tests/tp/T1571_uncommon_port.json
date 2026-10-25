@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-10-25T06:16:08.000Z",
+  "rule": {
+    "level": 0,
+    "description": "Test event"
+  },
+  "agent": {
+    "id": "001",
+    "name": "WS01",
+    "ip": "10.10.10.20"
+  },
+  "manager": {
+    "name": "wazuh-manager"
+  },
+  "id": "db0c0be8-d318-4b14-85d5-533c43499ec8",
+  "data": {
+    "win": {
+      "system": {
+        "eventID": "3",
+        "channel": "Microsoft-Windows-Sysmon/Operational",
+        "computer": "WS01.corp.purpleforge.local",
+        "providerName": "Microsoft-Windows-Sysmon",
+        "systemTime": "2026-10-25T06:16:08.000Z",
+        "eventRecordID": "21689"
+      },
+      "eventdata": {
+        "image": "C:\\Users\\redteam\\Tools\\beacon.exe",
+        "user": "CORP\\redteam",
+        "destinationPort": "4444"
+      }
+    }
+  }
+}

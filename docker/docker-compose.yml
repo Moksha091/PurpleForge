@@ -1,0 +1,231 @@
+version: '3.8'
+
+# PurpleForge: Containerized Cloud SECOPS Stack
+# Profiles:
+#   siem: wazuh.indexer, wazuh.manager, wazuh.dashboard
+#   soar: shuffle-backend, shuffle-frontend, shuffle-database, orborus
+#   dfir: dfir-iris-web, dfir-iris-db, velociraptor
+# Strict memory constraints configured to run in 4GB-6GB host environments.
+
+networks:
+  secops_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  wazuh_indexer_data:
+  wazuh_manager_data:
+  wazuh_manager_etc:
+  shuffle_db_data:
+  iris_db_data:
+  velociraptor_data:
+
+services:
+  # ───────────────────────────────────────────────────────────────────────────
+  # SIEM / Indexer: Wazuh Indexer (OpenSearch 2.x engine)
+  # ───────────────────────────────────────────────────────────────────────────
+  wazuh.indexer:
+    image: wazuh/wazuh-indexer:4.7.2
+    container_name: purpleforge-indexer
+    hostname: wazuh.indexer
+    restart: unless-stopped
+    profiles: ["siem", "soar", "default"]
+    ports:
+      - "9200:9200"
+    environment:
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "bootstrap.memory_lock=true"
+      - "discovery.type=single-node"
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
+      - "DISABLE_SECURITY_PLUGIN=false"
+      - "INDEXER_USERNAME=${INDEXER_USERNAME:-admin}"
+      - "INDEXER_PASSWORD=${INDEXER_PASSWORD:-SecretAdmin123!}"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 2048m
+    volumes:
+      - wazuh_indexer_data:/var/lib/wazuh-indexer
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.10
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # SIEM / Manager: Wazuh Manager & Filebeat Ingestion Engine
+  # ───────────────────────────────────────────────────────────────────────────
+  wazuh.manager:
+    image: wazuh/wazuh-manager:4.7.2
+    container_name: purpleforge-manager
+    hostname: wazuh.manager
+    restart: unless-stopped
+    profiles: ["siem", "soar", "default"]
+    ports:
+      - "1514:1514/udp"  # Wazuh Agent enrollment / secure connection
+      - "1515:1515"      # Wazuh Auth registration
+      - "55000:55000"    # Wazuh REST API
+    environment:
+      - "INDEXER_URL=https://172.28.0.10:9200"
+      - "INDEXER_USERNAME=${INDEXER_USERNAME:-admin}"
+      - "INDEXER_PASSWORD=${INDEXER_PASSWORD:-SecretAdmin123!}"
+      - "FILEBEAT_SSL_VERIFICATION=false"
+    mem_limit: 1200m
+    volumes:
+      - wazuh_manager_data:/var/ossec/data
+      - wazuh_manager_etc:/var/ossec/etc
+      - ./wazuh_config/enable_archives.sh:/entrypoint-scripts/enable_archives.sh:ro
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.11
+    depends_on:
+      - wazuh.indexer
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # SIEM / UI: Wazuh Dashboard (OpenSearch Dashboards)
+  # ───────────────────────────────────────────────────────────────────────────
+  wazuh.dashboard:
+    image: wazuh/wazuh-dashboard:4.7.2
+    container_name: purpleforge-dashboard
+    hostname: wazuh.dashboard
+    restart: unless-stopped
+    profiles: ["siem", "default"]
+    ports:
+      - "443:5601"
+    environment:
+      - "INDEXER_URL=https://172.28.0.10:9200"
+      - "INDEXER_USERNAME=${INDEXER_USERNAME:-admin}"
+      - "INDEXER_PASSWORD=${INDEXER_PASSWORD:-SecretAdmin123!}"
+      - "WAZUH_API_URL=https://172.28.0.11:55000"
+      - "API_USERNAME=${WAZUH_API_USER:-wazuh-wui}"
+      - "API_PASSWORD=${WAZUH_API_PASSWORD:-SecretWazuh123!}"
+    mem_limit: 768m
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.12
+    depends_on:
+      - wazuh.indexer
+      - wazuh.manager
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # SOAR: Shuffle Backend, Frontend & Execution Engine
+  # ───────────────────────────────────────────────────────────────────────────
+  shuffle-database:
+    image: opensearchproject/opensearch:2.11.0
+    container_name: purpleforge-shuffle-db
+    hostname: shuffle-database
+    restart: unless-stopped
+    profiles: ["soar"]
+    environment:
+      - "discovery.type=single-node"
+      - "OPENSEARCH_JAVA_OPTS=-Xms384m -Xmx384m"
+      - "DISABLE_SECURITY_PLUGIN=true"
+    mem_limit: 512m
+    volumes:
+      - shuffle_db_data:/usr/share/opensearch/data
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.20
+
+  shuffle-backend:
+    image: ghcr.io/shuffle/shuffle-backend:latest
+    container_name: purpleforge-shuffle-backend
+    hostname: shuffle-backend
+    restart: unless-stopped
+    profiles: ["soar"]
+    ports:
+      - "3001:5001"
+    environment:
+      - "SHUFFLE_OPENSEARCH_URL=http://172.28.0.20:9200"
+      - "SHUFFLE_APP_HOTLOAD_FOLDER=/shuffle-apps"
+      - "SHUFFLE_FILE_LOCATION=/shuffle-files"
+      - "BACKEND_HOSTNAME=shuffle-backend"
+    mem_limit: 512m
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.21
+    depends_on:
+      - shuffle-database
+
+  shuffle-frontend:
+    image: ghcr.io/shuffle/shuffle-frontend:latest
+    container_name: purpleforge-shuffle-frontend
+    hostname: shuffle-frontend
+    restart: unless-stopped
+    profiles: ["soar"]
+    ports:
+      - "3443:80"
+    environment:
+      - "BACKEND_HOSTNAME=shuffle-backend"
+    mem_limit: 512m
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.22
+    depends_on:
+      - shuffle-backend
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # DFIR: DFIR-IRIS Web Platform & Case Management
+  # ───────────────────────────────────────────────────────────────────────────
+  dfir-iris-db:
+    image: postgres:14-alpine
+    container_name: purpleforge-iris-db
+    hostname: dfir-iris-db
+    restart: unless-stopped
+    profiles: ["soar", "dfir"]
+    environment:
+      - "POSTGRES_USER=${IRIS_DB_USER:-iris}"
+      - "POSTGRES_PASSWORD=${IRIS_DB_PASSWORD:-SecretIrisDB123!}"
+      - "POSTGRES_DB=iris_db"
+    mem_limit: 256m
+    volumes:
+      - iris_db_data:/var/lib/postgresql/data
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.30
+
+  dfir-iris-web:
+    image: dfiriris/iris-web:v2.4.4
+    container_name: purpleforge-iris-web
+    hostname: dfir-iris-web
+    restart: unless-stopped
+    profiles: ["soar", "dfir"]
+    ports:
+      - "8443:443"
+    environment:
+      - "POSTGRES_SERVER=172.28.0.30"
+      - "POSTGRES_USER=${IRIS_DB_USER:-iris}"
+      - "POSTGRES_PASSWORD=${IRIS_DB_PASSWORD:-SecretIrisDB123!}"
+      - "POSTGRES_DB=iris_db"
+      - "POSTGRES_PORT=5432"
+      - "IRIS_SECRET_KEY=${IRIS_SECRET_KEY:-ChangeMeSuperSecretKey998877}"
+    mem_limit: 768m
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.31
+    depends_on:
+      - dfir-iris-db
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # DFIR: Velociraptor Endpoint Forensics Server
+  # ───────────────────────────────────────────────────────────────────────────
+  velociraptor:
+    image: weslambert/velociraptor:latest
+    container_name: purpleforge-velociraptor
+    hostname: velociraptor
+    restart: unless-stopped
+    profiles: ["dfir"]
+    ports:
+      - "8000:8000"  # Velociraptor Agent GUI/Frontend
+      - "8889:8889"  # Velociraptor Admin Web GUI
+    mem_limit: 512m
+    volumes:
+      - velociraptor_data:/velociraptor
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.40

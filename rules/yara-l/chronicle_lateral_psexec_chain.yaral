@@ -1,0 +1,59 @@
+/*
+ * chronicle_lateral_psexec_chain.yaral
+ * Detects PsExec lateral movement chain: service installation followed by
+ * remote process execution on the target host within a 5-minute window.
+ * Google SecOps (Chronicle) YARA-L 2.0 multi-event correlation rule.
+ */
+
+rule chronicle_lateral_psexec_chain {
+  meta:
+    author = "Vemula Moksha"
+    description = "Correlates PsExec service installation (Event 7045) with subsequent remote command execution on the target host, indicating active lateral movement."
+    severity = "CRITICAL"
+    mitre_attack = "T1021.002, T1569.002"
+    mitre_tactic = "lateral_movement, execution"
+    reference = "https://attack.mitre.org/techniques/T1021/002/"
+    status = "stable"
+    created = "2026-10-25"
+
+  events:
+    // Event 1: PsExec service installation (Event 7045)
+    $svc_install.metadata.event_type = "SERVICE_CREATION"
+    $svc_install.principal.hostname = $target_host
+    (
+      $svc_install.target.resource.name = /PSEXESVC/i or
+      $svc_install.target.resource.name = /PAExec/i or
+      $svc_install.target.resource.name = /CSExec/i or
+      $svc_install.target.resource.name = /RemCom/i
+    )
+    $svc_install.metadata.event_timestamp.seconds = $install_time
+
+    // Event 2: Suspicious process launched on same host after service install
+    $remote_exec.metadata.event_type = "PROCESS_LAUNCH"
+    $remote_exec.principal.hostname = $target_host
+    (
+      $remote_exec.principal.process.file.full_path = /PSEXESVC\.exe$/i or
+      $remote_exec.principal.process.file.full_path = /PAExec/i or
+      $remote_exec.target.process.command_line = /cmd\.exe/ or
+      $remote_exec.target.process.command_line = /powershell/i or
+      $remote_exec.target.process.command_line = /whoami/i or
+      $remote_exec.target.process.command_line = /net user/i or
+      $remote_exec.target.process.command_line = /ipconfig/i
+    )
+    $remote_exec.metadata.event_timestamp.seconds = $exec_time
+
+    // Temporal ordering
+    $exec_time > $install_time
+
+  match:
+    $target_host over 5m
+
+  outcome:
+    $risk_score = max(90)
+    $service_name = array_distinct($svc_install.target.resource.name)
+    $executed_commands = array_distinct($remote_exec.target.process.command_line)
+    $executing_user = array_distinct($remote_exec.principal.user.userid)
+
+  condition:
+    $svc_install and $remote_exec
+}

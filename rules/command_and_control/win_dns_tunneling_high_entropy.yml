@@ -1,0 +1,56 @@
+title: DNS Tunneling - High Entropy DNS Queries
+id: d2a8fc2a-5db3-4ce8-b9e6-2f3a4b7c8d9e
+status: stable
+description: |
+  Detects DNS queries with unusually long subdomain labels or high-entropy
+  patterns indicative of DNS tunneling for C2 communication. Monitors Sysmon
+  Event ID 22 (DNSQuery) for suspicious query characteristics.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.command_and_control
+  - attack.t1071.004
+logsource:
+  product: windows
+  category: dns_query
+detection:
+  selection_long_dns:
+    QueryName|re: '^[a-zA-Z0-9]{30,}\.'
+  selection_known_tunnel_tools:
+    QueryName|contains:
+      - '.dnscat.'
+      - '.iodine.'
+      - '.dnscmd.'
+      - '.tunnel.'
+  filter_legitimate_cdn:
+    QueryName|endswith:
+      - '.windows.net'
+      - '.windowsupdate.com'
+      - '.microsoft.com'
+      - '.office365.com'
+      - '.office.com'
+      - '.azure.com'
+      - '.googleapis.com'
+      - '.gstatic.com'
+      - '.akamaized.net'
+      - '.cloudfront.net'
+  filter_ocsp_crl:
+    QueryName|contains:
+      - 'ocsp.'
+      - 'crl.'
+      - '.digicert.com'
+      - '.letsencrypt.org'
+  condition: (selection_long_dns or selection_known_tunnel_tools) and not filter_legitimate_cdn and not filter_ocsp_crl
+falsepositives:
+  - CDN edge servers with long hash-based subdomains
+  - OCSP and CRL lookups with long query strings
+  - Anti-malware cloud lookups
+level: high
+custom:
+  mitre_technique: T1071.004
+  mitre_tactic: command_and_control
+  tp_file: tests/tp/T1071.004_dns_tunnel.json
+  tuning_notes: >
+    Excluded Microsoft, Google, Akamai, CloudFront CDN domains and OCSP/CRL
+    lookups that naturally have long subdomains. The 30-character threshold
+    balances sensitivity against CDN false positives.

@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-10-25T06:16:08.000Z",
+  "rule": {
+    "level": 0,
+    "description": "Test event"
+  },
+  "agent": {
+    "id": "001",
+    "name": "WS01",
+    "ip": "10.10.10.20"
+  },
+  "manager": {
+    "name": "wazuh-manager"
+  },
+  "id": "0f2c72a5-e182-4d35-a7d8-cae43a45fb95",
+  "data": {
+    "win": {
+      "system": {
+        "eventID": "1",
+        "channel": "Microsoft-Windows-Sysmon/Operational",
+        "computer": "WS01.corp.purpleforge.local",
+        "providerName": "Microsoft-Windows-Sysmon",
+        "systemTime": "2026-10-25T06:16:08.000Z",
+        "eventRecordID": "6061"
+      },
+      "eventdata": {
+        "image": "C:\\Windows\\System32\\sc.exe",
+        "commandLine": "sc config VulnService binpath= \"cmd.exe /c C:\\Temp\\payload.exe\"",
+        "parentImage": "C:\\Windows\\System32\\cmd.exe",
+        "user": "CORP\\redteam"
+      }
+    }
+  }
+}

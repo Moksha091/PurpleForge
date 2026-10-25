@@ -1,0 +1,65 @@
+title: Non-Browser Process Using Uncommon Network Port
+id: f4c0be4c-7fd5-4ea0-d1a8-4b5c6d9e0f1a
+status: stable
+description: |
+  Detects non-browser processes establishing network connections on uncommon
+  ports (e.g., 4444, 8443, 8080, 9090, 1337, 31337) often used by C2 frameworks.
+  Monitors Sysmon Event ID 3 (NetworkConnection) for suspicious port usage.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.command_and_control
+  - attack.t1571
+logsource:
+  product: windows
+  category: network_connection
+detection:
+  selection_uncommon_port:
+    DestinationPort:
+      - 4444
+      - 5555
+      - 6666
+      - 7777
+      - 8443
+      - 8080
+      - 9090
+      - 1337
+      - 31337
+      - 4443
+      - 4445
+      - 13337
+      - 6667
+      - 6697
+  filter_browsers:
+    Image|endswith:
+      - '\chrome.exe'
+      - '\msedge.exe'
+      - '\firefox.exe'
+      - '\brave.exe'
+      - '\opera.exe'
+      - '\iexplore.exe'
+  filter_development_tools:
+    Image|endswith:
+      - '\node.exe'
+      - '\java.exe'
+      - '\Code.exe'
+      - '\devenv.exe'
+      - '\idea64.exe'
+  filter_system_services:
+    Image|endswith:
+      - '\svchost.exe'
+      - '\System'
+  condition: selection_uncommon_port and not filter_browsers and not filter_development_tools and not filter_system_services
+falsepositives:
+  - Web browsers connecting to alternative HTTPS ports (8443)
+  - Development tools (Node.js, VS Code) using custom ports
+  - Java applications with non-standard ports
+level: medium
+custom:
+  mitre_technique: T1571
+  mitre_tactic: command_and_control
+  tp_file: tests/tp/T1571_uncommon_port.json
+  tuning_notes: >
+    Excluded browsers, development tools (Node, VS Code, IntelliJ), and system
+    services. Non-browser processes connecting to known C2 ports (4444, 1337,
+    31337) are strong indicators of compromise.

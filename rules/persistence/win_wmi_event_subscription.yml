@@ -1,0 +1,47 @@
+title: WMI Event Subscription Persistence
+id: d4a0fc48-7db0-4ce5-b1e8-4f5a6b9c0d1e
+status: stable
+description: |
+  Detects creation of WMI event subscriptions (EventFilter, EventConsumer,
+  FilterToConsumerBinding) used for fileless persistence. Adversaries use
+  __EventFilter and CommandLineEventConsumer to execute code on system events.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.persistence
+  - attack.t1546.003
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_wmi_subscription:
+    Image|endswith:
+      - '\wmic.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains:
+      - '__EventFilter'
+      - 'EventConsumer'
+      - 'FilterToConsumerBinding'
+      - 'Register-WmiEvent'
+      - 'Set-WmiInstance'
+      - 'Create __'
+  filter_scom_agent:
+    ParentImage|endswith:
+      - '\MonitoringHost.exe'
+      - '\HealthService.exe'
+  filter_configmgr:
+    CommandLine|contains: 'ConfigMgr'
+  condition: selection_wmi_subscription and not filter_scom_agent and not filter_configmgr
+falsepositives:
+  - SCOM health monitoring WMI subscriptions
+  - Configuration Manager WMI event watchers
+level: critical
+custom:
+  mitre_technique: T1546.003
+  mitre_tactic: persistence
+  tp_file: tests/tp/T1546.003_wmi_subscription.json
+  tuning_notes: >
+    Excluded SCOM and ConfigMgr WMI event operations. WMI event subscription
+    creation is rarely legitimate outside monitoring infrastructure, warranting
+    critical severity.

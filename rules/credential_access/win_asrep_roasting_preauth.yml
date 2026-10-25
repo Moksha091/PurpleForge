@@ -1,0 +1,40 @@
+title: AS-REP Roasting - Pre-Authentication Disabled Ticket Request
+id: f2c8be20-5fd8-4ea3-d9a6-2b3c4d7e8f9a
+status: stable
+description: |
+  Detects Kerberos AS-REQ/AS-REP exchanges (Event ID 4768) for accounts with
+  pre-authentication disabled, indicating AS-REP Roasting. Adversaries target
+  accounts with DONT_REQUIRE_PREAUTH flag to crack passwords offline.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.credential_access
+  - attack.t1558.004
+logsource:
+  product: windows
+  service: security
+detection:
+  selection_asrep:
+    EventID: 4768
+    TicketEncryptionType: '0x17'
+  filter_machine_accounts:
+    User|endswith: '$'
+  filter_service_accounts_normal:
+    User|startswith:
+      - 'MSOL_'
+      - 'AAD_'
+      - 'health'
+  condition: selection_asrep and not filter_machine_accounts and not filter_service_accounts_normal
+falsepositives:
+  - Azure AD Connect sync accounts (MSOL_, AAD_)
+  - Machine accounts requesting AS-REP
+  - Health monitoring service accounts
+level: high
+custom:
+  mitre_technique: T1558.004
+  mitre_tactic: credential_access
+  tp_file: tests/tp/T1558.004_asrep_roast.json
+  tuning_notes: >
+    Excluded machine accounts and Azure AD Connect service accounts (MSOL_,
+    AAD_) that may generate RC4 AS-REP traffic. User accounts with pre-auth
+    disabled requesting RC4 tickets are strong AS-REP Roasting indicators.

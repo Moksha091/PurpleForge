@@ -1,0 +1,63 @@
+title: Suspicious Scheduled Task Creation
+id: b2e8da26-5bfe-4ac3-f9c6-2d3e4f7a8b9c
+status: stable
+description: |
+  Detects creation of scheduled tasks via schtasks.exe or at.exe with suspicious
+  characteristics such as execution from TEMP directories, use of encoded commands,
+  or remote task creation. Commonly used for persistence and lateral movement.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.persistence
+  - attack.t1053.005
+  - attack.execution
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_schtasks:
+    Image|endswith:
+      - '\schtasks.exe'
+      - '\at.exe'
+    CommandLine|contains:
+      - '/create'
+      - '/change'
+  selection_suspicious_action:
+    CommandLine|contains:
+      - '\Temp\'
+      - '\AppData\Local\Temp\'
+      - '\Downloads\'
+      - 'powershell'
+      - 'cmd.exe /c'
+      - 'mshta'
+      - 'regsvr32'
+      - 'rundll32'
+      - 'wscript'
+      - 'cscript'
+      - '-enc '
+      - '-encodedcommand'
+      - 'http://'
+      - 'https://'
+  filter_windows_update:
+    CommandLine|contains:
+      - '\Microsoft\Windows\UpdateOrchestrator'
+      - '\Microsoft\Windows\WindowsUpdate'
+      - '\Microsoft\Windows\Defrag'
+  filter_office_updates:
+    CommandLine|contains:
+      - '\Microsoft\Office'
+      - 'OfficeC2RClient'
+  condition: selection_schtasks and selection_suspicious_action and not filter_windows_update and not filter_office_updates
+falsepositives:
+  - Windows Update creating scheduled tasks for deferred reboots
+  - Microsoft Office Click-to-Run update tasks
+  - Disk defragmentation maintenance tasks
+level: high
+custom:
+  mitre_technique: T1053.005
+  mitre_tactic: persistence
+  tp_file: tests/tp/T1053.005_schtask.json
+  tuning_notes: >
+    Filtered Windows Update orchestrator, Office C2R, and defrag maintenance
+    tasks. Required both schtasks create AND suspicious action paths (Temp,
+    Downloads, encoded commands, LOLBins) to reduce noise.

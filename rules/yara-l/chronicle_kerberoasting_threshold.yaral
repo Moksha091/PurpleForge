@@ -1,0 +1,49 @@
+/*
+ * chronicle_kerberoasting_threshold.yaral
+ * Detects Kerberoasting by correlating multiple RC4 TGS requests from the
+ * same user account within a 5-minute window, exceeding a threshold.
+ * Google SecOps (Chronicle) YARA-L 2.0 multi-event correlation rule.
+ */
+
+rule chronicle_kerberoasting_threshold {
+  meta:
+    author = "Vemula Moksha"
+    description = "Detects potential Kerberoasting activity by identifying a single user requesting multiple RC4-encrypted Kerberos service tickets within 5 minutes."
+    severity = "HIGH"
+    mitre_attack = "T1558.003"
+    mitre_tactic = "credential_access"
+    reference = "https://attack.mitre.org/techniques/T1558/003/"
+    status = "stable"
+    created = "2026-10-25"
+
+  events:
+    // Kerberos TGS-REQ with RC4 encryption (0x17)
+    $tgs_req.metadata.event_type = "USER_RESOURCE_ACCESS"
+    $tgs_req.metadata.product_event_type = "4769"
+    $tgs_req.principal.hostname = $hostname
+    $tgs_req.principal.user.userid = $user
+    $tgs_req.target.resource.name = $service_name
+    $tgs_req.security_result.detection_fields["TicketEncryptionType"] = "0x17"
+
+    // Exclude machine accounts (ending in $)
+    NOT $user = /\$$/
+
+    // Exclude krbtgt service
+    NOT $service_name = "krbtgt"
+
+    // Exclude computer service principals
+    NOT $service_name = /\$$/
+
+  match:
+    $user over 5m
+
+  outcome:
+    $risk_score = max(80)
+    $unique_services = count_distinct($service_name)
+    $total_requests = count($tgs_req.metadata.id)
+    $target_host = array_distinct($hostname)
+
+  condition:
+    // More than 5 distinct services requested with RC4 in 5 minutes
+    #tgs_req >= 5 and $unique_services >= 3
+}

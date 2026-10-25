@@ -1,0 +1,55 @@
+title: Executable Dropped on Admin Share
+id: b4e0da42-7bf5-4ac0-f1c8-4d5e6f9a0b1c
+status: stable
+description: |
+  Detects executable files (.exe, .dll, .bat, .ps1, .vbs) written to Windows
+  administrative shares (C$, ADMIN$, IPC$) indicating lateral movement staging.
+  Monitors Sysmon Event ID 11 (FileCreate) and Event ID 5145 (network share access).
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.lateral_movement
+  - attack.t1021.002
+logsource:
+  product: windows
+  category: file_event
+detection:
+  selection_admin_share:
+    ShareName|contains:
+      - 'C$'
+      - 'ADMIN$'
+    TargetFilename|endswith:
+      - '.exe'
+      - '.dll'
+      - '.bat'
+      - '.cmd'
+      - '.ps1'
+      - '.vbs'
+      - '.js'
+      - '.hta'
+      - '.scr'
+  filter_sccm_distribution:
+    TargetFilename|contains:
+      - '\ccmsetup\'
+      - '\ccmcache\'
+  filter_gpo_scripts:
+    TargetFilename|contains:
+      - '\Policies\'
+      - '\scripts\Startup\'
+      - '\scripts\Shutdown\'
+  filter_wsus_updates:
+    TargetFilename|contains: '\WUTemp\'
+  condition: selection_admin_share and not filter_sccm_distribution and not filter_gpo_scripts and not filter_wsus_updates
+falsepositives:
+  - SCCM client distribution via admin shares
+  - Group Policy startup/shutdown scripts
+  - WSUS update staging
+level: high
+custom:
+  mitre_technique: T1021.002
+  mitre_tactic: lateral_movement
+  tp_file: tests/tp/T1021.002_admin_share.json
+  tuning_notes: >
+    Excluded SCCM distribution (ccmsetup, ccmcache), GPO scripts, and WSUS
+    staging directories. Executables dropped on admin shares outside these
+    paths indicate unauthorized lateral movement.

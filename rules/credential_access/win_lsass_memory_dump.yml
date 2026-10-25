@@ -1,0 +1,56 @@
+title: LSASS Memory Dump Access
+id: b8e4da8c-1bf4-4ac9-f5c2-8d9e0f3a4b5c
+status: stable
+description: |
+  Detects process access to lsass.exe with suspicious access rights (0x1fffff,
+  0x1010, 0x1038) indicative of credential dumping via Mimikatz, ProcDump,
+  or comsvcs.dll MiniDump. Monitors Sysmon Event ID 10 (ProcessAccess).
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+logsource:
+  product: windows
+  category: process_access
+detection:
+  selection_target_lsass:
+    TargetImage|endswith: '\lsass.exe'
+    GrantedAccess|contains:
+      - '0x1fffff'
+      - '0x1010'
+      - '0x1038'
+      - '0x1400'
+      - '0x0800'
+      - '0x0040'
+  filter_system_processes:
+    SourceImage|endswith:
+      - '\svchost.exe'
+      - '\csrss.exe'
+      - '\services.exe'
+      - '\lsm.exe'
+      - '\winlogon.exe'
+      - '\wininit.exe'
+  filter_defender:
+    SourceImage|endswith:
+      - '\MsMpEng.exe'
+      - '\MpCmdRun.exe'
+  filter_lsass_self:
+    SourceImage|endswith: '\lsass.exe'
+  filter_normal_access:
+    GrantedAccess: '0x1410'
+    SourceImage|endswith: '\svchost.exe'
+  condition: selection_target_lsass and not filter_system_processes and not filter_defender and not filter_lsass_self and not filter_normal_access
+falsepositives:
+  - Windows Defender real-time protection scanning lsass
+  - System processes (svchost, csrss, winlogon) accessing lsass normally
+  - Antivirus products hooking into lsass for credential protection
+level: critical
+custom:
+  mitre_technique: T1003.001
+  mitre_tactic: credential_access
+  tp_file: tests/tp/T1003.001_lsass_dump.json
+  tuning_notes: >
+    Excluded core system processes and Defender accessing lsass.exe. The 0x1410
+    access by svchost is normal AD authentication traffic. Any non-system process
+    with high access rights to lsass warrants critical investigation.

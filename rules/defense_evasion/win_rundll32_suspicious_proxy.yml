@@ -1,0 +1,55 @@
+title: Suspicious Rundll32 Proxy Execution
+id: c1f7eb19-4ca2-4bd7-a8d5-1e2f3a6b7c8d
+status: stable
+description: |
+  Detects suspicious use of rundll32.exe to proxy-execute code via DLL exports,
+  JavaScript, or VBScript. Adversaries abuse rundll32 as a LOLBin to bypass
+  application whitelisting and execute malicious payloads.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.defense_evasion
+  - attack.t1218.011
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_rundll32:
+    Image|endswith: '\rundll32.exe'
+  selection_suspicious_args:
+    CommandLine|contains:
+      - 'javascript:'
+      - 'vbscript:'
+      - 'shell32.dll,Control_RunDLL'
+      - 'url.dll,FileProtocolHandler'
+      - 'advpack.dll,LaunchINFSection'
+      - 'pcwutl.dll,LaunchApplication'
+      - 'zipfldr.dll,RouteTheCall'
+      - 'shdocvw.dll,OpenURL'
+      - 'comsvcs.dll,MiniDump'
+      - 'C:\Users\'
+      - 'C:\Temp\'
+      - 'AppData\Local\Temp'
+      - '.tmp'
+      - 'http://'
+      - 'https://'
+  filter_shell32_normal:
+    CommandLine|contains:
+      - 'shell32.dll,SHCreateLocalServerRunDll'
+      - 'shell32.dll,Control_RunDLL desk.cpl'
+      - 'shell32.dll,Control_RunDLL intl.cpl'
+  filter_printui:
+    CommandLine|contains: 'printui.dll'
+  condition: selection_rundll32 and selection_suspicious_args and not filter_shell32_normal and not filter_printui
+falsepositives:
+  - Legitimate Control Panel applets launched via rundll32
+  - Print UI operations
+level: high
+custom:
+  mitre_technique: T1218.011
+  mitre_tactic: defense_evasion
+  tp_file: tests/tp/T1218.011_rundll32.json
+  tuning_notes: >
+    Excluded normal shell32 Control Panel operations and print UI. Focused on
+    suspicious DLL exports (comsvcs MiniDump, advpack, shdocvw), script
+    protocols, and temporary file paths indicating malicious proxy execution.

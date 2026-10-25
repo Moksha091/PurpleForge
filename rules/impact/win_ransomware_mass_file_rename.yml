@@ -1,0 +1,64 @@
+title: Ransomware Mass File Rename Activity
+id: b6e2da6e-9bf7-4ac1-f3c0-6d7e8f1a2b3c
+status: stable
+description: |
+  Detects mass file rename operations with suspicious extensions commonly
+  associated with ransomware encryption. Monitors Sysmon Event ID 11
+  (FileCreate) for burst patterns of files with known ransomware extensions.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.impact
+  - attack.t1486
+logsource:
+  product: windows
+  category: file_event
+detection:
+  selection_ransomware_extensions:
+    TargetFilename|endswith:
+      - '.locked'
+      - '.encrypted'
+      - '.crypted'
+      - '.crypt'
+      - '.enc'
+      - '.purplelocked'
+      - '.ransom'
+      - '.wnry'
+      - '.wcry'
+      - '.wncry'
+      - '.locky'
+      - '.cerber'
+      - '.zepto'
+      - '.thor'
+      - '.aesir'
+      - '.dharma'
+      - '.phobos'
+      - '.ryuk'
+      - '.conti'
+      - '.lockbit'
+      - '.hive'
+      - '.black'
+      - '.basta'
+  filter_legitimate_encryption:
+    Image|endswith:
+      - '\7z.exe'
+      - '\WinRAR.exe'
+      - '\gpg.exe'
+      - '\VeraCrypt.exe'
+  filter_temp_files:
+    TargetFilename|contains:
+      - '\AppData\Local\Temp\'
+      - '\Windows\Temp\'
+  condition: selection_ransomware_extensions and not filter_legitimate_encryption and not filter_temp_files
+falsepositives:
+  - Legitimate file encryption tools (7-Zip, GPG, VeraCrypt)
+  - Temporary files with .enc extension in system temp directories
+level: critical
+custom:
+  mitre_technique: T1486
+  mitre_tactic: impact
+  tp_file: tests/tp/T1486_ransomware.json
+  tuning_notes: >
+    Excluded legitimate encryption tools and system temp directories. Known
+    ransomware extensions provide high-fidelity detection. The .purplelocked
+    extension is specific to PurpleForge's safe ransomware simulator.

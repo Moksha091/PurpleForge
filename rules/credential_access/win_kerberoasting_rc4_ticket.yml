@@ -1,0 +1,39 @@
+title: Kerberoasting - RC4 Encrypted Service Ticket Request
+id: e1b7ad1f-4ec7-4df2-c8f5-1a2b3c6d7e8f
+status: stable
+description: |
+  Detects Kerberos service ticket requests (TGS-REQ, Event ID 4769) using
+  RC4 encryption (Type 0x17) which indicates Kerberoasting activity.
+  Modern environments should use AES encryption for service tickets.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.credential_access
+  - attack.t1558.003
+logsource:
+  product: windows
+  service: security
+detection:
+  selection_kerberoast:
+    EventID: 4769
+    TicketEncryptionType: '0x17'
+  filter_machine_accounts:
+    User|endswith: '$'
+  filter_krbtgt:
+    ServiceName: 'krbtgt'
+  filter_computer_services:
+    ServiceName|endswith: '$'
+  condition: selection_kerberoast and not filter_machine_accounts and not filter_krbtgt and not filter_computer_services
+falsepositives:
+  - Legacy applications still using RC4 encryption for Kerberos
+  - Machine accounts requesting RC4 tickets (filtered)
+level: high
+custom:
+  mitre_technique: T1558.003
+  mitre_tactic: credential_access
+  tp_file: tests/tp/T1558.003_kerberoast.json
+  tuning_notes: >
+    Excluded machine accounts (ending in $), krbtgt service, and computer
+    service principals. RC4 (0x17) ticket requests from user accounts are
+    strong indicators of Kerberoasting. Legacy RC4 applications should be
+    documented and added to allow-list.

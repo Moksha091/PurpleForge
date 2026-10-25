@@ -1,0 +1,56 @@
+title: PowerShell Download Cradle Execution
+id: 7a4f3682-1dba-4c9f-b5e2-8f9a0b3c4d5e
+status: stable
+description: |
+  Detects PowerShell execution patterns associated with download cradles used to
+  fetch and execute remote payloads. Covers Net.WebClient, Invoke-WebRequest,
+  Start-BitsTransfer, and curl/wget aliases commonly used in fileless attacks.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.execution
+  - attack.t1059.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_process:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  selection_cradle:
+    CommandLine|contains:
+      - 'Net.WebClient'
+      - 'DownloadString'
+      - 'DownloadFile'
+      - 'Invoke-WebRequest'
+      - 'iwr '
+      - 'Start-BitsTransfer'
+      - 'Invoke-RestMethod'
+      - 'irm '
+      - 'curl '
+      - 'wget '
+      - 'Net.Sockets.TCPClient'
+      - 'IO.StreamReader'
+  filter_chocolatey:
+    CommandLine|contains:
+      - 'chocolatey'
+      - 'choco install'
+  filter_winget:
+    ParentImage|endswith: '\winget.exe'
+  filter_vscode_update:
+    CommandLine|contains: 'update.code.visualstudio.com'
+  condition: selection_process and selection_cradle and not filter_chocolatey and not filter_winget and not filter_vscode_update
+falsepositives:
+  - Chocolatey package manager installations
+  - winget package downloads
+  - VS Code automatic update checks
+level: high
+custom:
+  mitre_technique: T1059.001
+  mitre_tactic: execution
+  tp_file: tests/tp/T1059.001_download_cradle.json
+  tuning_notes: >
+    Filtered Chocolatey, winget, and VS Code update download patterns to
+    suppress known FPs in developer workstations. Retained broad cradle
+    coverage to catch obfuscated variants.

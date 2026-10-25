@@ -1,0 +1,800 @@
+{
+  "name": "PurpleForge Detection Coverage",
+  "versions": {
+    "attack": "14",
+    "navigator": "4.5",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "Detection-as-Code verified test coverage for PurpleForge automated purple team pipeline",
+  "filters": {
+    "platforms": [
+      "Windows"
+    ]
+  },
+  "sorting": 0,
+  "layout": {
+    "layout": "side",
+    "aggregateFunction": "average",
+    "showID": true,
+    "showName": true,
+    "showAggregateScores": true,
+    "countUnscored": false
+  },
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1105",
+      "tactic": "command-and-control",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Certutil URL Cache Download | Tuning: Excluded certificate enrollment (addstore, viewstore) and PKI auto-enrollment svchost operations. Certutil -urlcache -f for arbitrary file download is well-documented LOLBin behavior and warrants investigation.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Certutil URL Cache Download"
+        },
+        {
+          "name": "Rule ID",
+          "value": "e3b9ad3b-6ec4-4df9-c0f7-3a4b5c8d9e0f"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/command_and_control/win_certutil_urlcache_download.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded certificate enrollment (addstore, viewstore) and PKI auto-enrollment svchost operations. Certutil -urlcache -f for arbitrary file download is well-documented LOLBin behavior and warrants investigation.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1071.004",
+      "tactic": "command-and-control",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: DNS Tunneling - High Entropy DNS Queries | Tuning: Excluded Microsoft, Google, Akamai, CloudFront CDN domains and OCSP/CRL lookups that naturally have long subdomains. The 30-character threshold balances sensitivity against CDN false positives.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "DNS Tunneling - High Entropy DNS Queries"
+        },
+        {
+          "name": "Rule ID",
+          "value": "d2a8fc2a-5db3-4ce8-b9e6-2f3a4b7c8d9e"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/command_and_control/win_dns_tunneling_high_entropy.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded Microsoft, Google, Akamai, CloudFront CDN domains and OCSP/CRL lookups that naturally have long subdomains. The 30-character threshold balances sensitivity against CDN false positives.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1571",
+      "tactic": "command-and-control",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Non-Browser Process Using Uncommon Network Port | Tuning: Excluded browsers, development tools (Node, VS Code, IntelliJ), and system services. Non-browser processes connecting to known C2 ports (4444, 1337, 31337) are strong indicators of compromise.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Non-Browser Process Using Uncommon Network Port"
+        },
+        {
+          "name": "Rule ID",
+          "value": "f4c0be4c-7fd5-4ea0-d1a8-4b5c6d9e0f1a"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/command_and_control/win_non_browser_uncommon_port.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded browsers, development tools (Node, VS Code, IntelliJ), and system services. Non-browser processes connecting to known C2 ports (4444, 1337, 31337) are strong indicators of compromise.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1558.004",
+      "tactic": "credential-access",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: AS-REP Roasting - Pre-Authentication Disabled Ticket Request | Tuning: Excluded machine accounts and Azure AD Connect service accounts (MSOL_, AAD_) that may generate RC4 AS-REP traffic. User accounts with pre-auth disabled requesting RC4 tickets are strong AS-REP Roasting indicators.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "AS-REP Roasting - Pre-Authentication Disabled Ticket Request"
+        },
+        {
+          "name": "Rule ID",
+          "value": "f2c8be20-5fd8-4ea3-d9a6-2b3c4d7e8f9a"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/credential_access/win_asrep_roasting_preauth.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded machine accounts and Azure AD Connect service accounts (MSOL_, AAD_) that may generate RC4 AS-REP traffic. User accounts with pre-auth disabled requesting RC4 tickets are strong AS-REP Roasting indicators.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1558.003",
+      "tactic": "credential-access",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Kerberoasting - RC4 Encrypted Service Ticket Request | Tuning: Excluded machine accounts (ending in $), krbtgt service, and computer service principals. RC4 (0x17) ticket requests from user accounts are strong indicators of Kerberoasting. Legacy RC4 applications should be documented and added to allow-list.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Kerberoasting - RC4 Encrypted Service Ticket Request"
+        },
+        {
+          "name": "Rule ID",
+          "value": "e1b7ad1f-4ec7-4df2-c8f5-1a2b3c6d7e8f"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/credential_access/win_kerberoasting_rc4_ticket.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded machine accounts (ending in $), krbtgt service, and computer service principals. RC4 (0x17) ticket requests from user accounts are strong indicators of Kerberoasting. Legacy RC4 applications should be documented and added to allow-list.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1003.001",
+      "tactic": "credential-access",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: LSASS Memory Dump Access | Tuning: Excluded core system processes and Defender accessing lsass.exe. The 0x1410 access by svchost is normal AD authentication traffic. Any non-system process with high access rights to lsass warrants critical investigation.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "LSASS Memory Dump Access"
+        },
+        {
+          "name": "Rule ID",
+          "value": "b8e4da8c-1bf4-4ac9-f5c2-8d9e0f3a4b5c"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/credential_access/win_lsass_memory_dump.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded core system processes and Defender accessing lsass.exe. The 0x1410 access by svchost is normal AD authentication traffic. Any non-system process with high access rights to lsass warrants critical investigation.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1003.003",
+      "tactic": "credential-access",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: NTDS.dit Extraction via Volume Shadow Copy | Tuning: Excluded Veeam and wbadmin backup operations. NTDS.dit extraction outside scheduled backup windows is almost always malicious. Critical severity due to full domain compromise potential.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "NTDS.dit Extraction via Volume Shadow Copy"
+        },
+        {
+          "name": "Rule ID",
+          "value": "d0a6fc0e-3db6-4ce1-b7e4-0f1a2b5c6d7e"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/credential_access/win_ntds_dit_extraction_vss.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded Veeam and wbadmin backup operations. NTDS.dit extraction outside scheduled backup windows is almost always malicious. Critical severity due to full domain compromise potential.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1003.002",
+      "tactic": "credential-access",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Registry Save of SAM/SYSTEM Hives for Credential Extraction | Tuning: Excluded backup software (BackupExec). Registry hive export of SAM/SYSTEM is almost never legitimate on endpoints and warrants critical severity. Case-insensitive matching covers both uppercase and lowercase variants.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Registry Save of SAM/SYSTEM Hives for Credential Extraction"
+        },
+        {
+          "name": "Rule ID",
+          "value": "c9f5eb9d-2ca5-4bd0-a6d3-9e0f1a4b5c6d"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/credential_access/win_reg_save_sam_system_hives.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded backup software (BackupExec). Registry hive export of SAM/SYSTEM is almost never legitimate on endpoints and warrants critical severity. Case-insensitive matching covers both uppercase and lowercase variants.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1562.001",
+      "tactic": "defense-evasion",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: AMSI Bypass via Reflection | Tuning: Excluded legitimate AMSI testing scripts. AMSI bypass via reflection is a well-known technique used by nearly all modern PowerShell-based attack frameworks (Covenant, Empire, CobaltStrike). Critical severity.\n || Rule: Windows Defender Real-Time Protection Disabled | Tuning: Excluded GPO script application and Intune management extensions that legitimately configure Defender settings. Interactive or script-driven Defender disablement warrants immediate investigation.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "AMSI Bypass via Reflection"
+        },
+        {
+          "name": "Rule ID",
+          "value": "b0e6da08-3bf1-4ac6-f7c4-0d1e2f5a6b7c"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/defense_evasion/win_amsi_bypass_reflection.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded legitimate AMSI testing scripts. AMSI bypass via reflection is a well-known technique used by nearly all modern PowerShell-based attack frameworks (Covenant, Empire, CobaltStrike). Critical severity.\n"
+        },
+        {
+          "name": "Rule Title",
+          "value": "Windows Defender Real-Time Protection Disabled"
+        },
+        {
+          "name": "Rule ID",
+          "value": "a9d5cf97-2ae0-4fb5-e6b3-9c0d1e4f5a6b"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/defense_evasion/win_defender_realtime_disabled.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded GPO script application and Intune management extensions that legitimately configure Defender settings. Interactive or script-driven Defender disablement warrants immediate investigation.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1218.011",
+      "tactic": "defense-evasion",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Suspicious Rundll32 Proxy Execution | Tuning: Excluded normal shell32 Control Panel operations and print UI. Focused on suspicious DLL exports (comsvcs MiniDump, advpack, shdocvw), script protocols, and temporary file paths indicating malicious proxy execution.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Suspicious Rundll32 Proxy Execution"
+        },
+        {
+          "name": "Rule ID",
+          "value": "c1f7eb19-4ca2-4bd7-a8d5-1e2f3a6b7c8d"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/defense_evasion/win_rundll32_suspicious_proxy.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded normal shell32 Control Panel operations and print UI. Focused on suspicious DLL exports (comsvcs MiniDump, advpack, shdocvw), script protocols, and temporary file paths indicating malicious proxy execution.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1070.001",
+      "tactic": "defense-evasion",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Security Event Log Cleared | Tuning: Only filtered SYSTEM account scheduled maintenance. Security log clearing is extremely rare in production and almost always malicious. Critical severity ensures immediate SOC investigation.\n || Rule: Event Log Cleared via wevtutil | Tuning: Only excluded SYSTEM-level scheduled task log rotation. Interactive or script-driven wevtutil cl operations warrant investigation. Pairs with Event ID 1102 rule for complete log-clearing coverage.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Security Event Log Cleared"
+        },
+        {
+          "name": "Rule ID",
+          "value": "e7b3ad75-0ec8-4df3-c4f1-7a8b9c2d3e4f"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/defense_evasion/win_security_eventlog_cleared.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Only filtered SYSTEM account scheduled maintenance. Security log clearing is extremely rare in production and almost always malicious. Critical severity ensures immediate SOC investigation.\n"
+        },
+        {
+          "name": "Rule Title",
+          "value": "Event Log Cleared via wevtutil"
+        },
+        {
+          "name": "Rule ID",
+          "value": "f8c4be86-1fd9-4ea4-d5a2-8b9c0d3e4f5a"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/defense_evasion/win_wevtutil_log_clear.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Only excluded SYSTEM-level scheduled task log rotation. Interactive or script-driven wevtutil cl operations warrant investigation. Pairs with Event ID 1102 rule for complete log-clearing coverage.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1059.003",
+      "tactic": "execution",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Whoami Reconnaissance via cmd.exe | Tuning: Excluded SCCM remote agents and ManageEngine inventory scripts that routinely invoke whoami/systeminfo during compliance checks. Parent process constraint (cmd.exe) reduces noise from Explorer shell invocations.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Whoami Reconnaissance via cmd.exe"
+        },
+        {
+          "name": "Rule ID",
+          "value": "8b5a4793-2ecb-4da0-c6f3-9a0b1c4d5e6f"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/execution/win_cmd_whoami_recon.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded SCCM remote agents and ManageEngine inventory scripts that routinely invoke whoami/systeminfo during compliance checks. Parent process constraint (cmd.exe) reduces noise from Explorer shell invocations.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1059.001",
+      "tactic": "execution",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: PowerShell Download Cradle Execution | Tuning: Filtered Chocolatey, winget, and VS Code update download patterns to suppress known FPs in developer workstations. Retained broad cradle coverage to catch obfuscated variants.\n || Rule: Suspicious PowerShell Encoded Command Execution | Tuning: Excluded SCCM (ccmexec.exe), Azure AD Connect, and Defender parent processes to eliminate baseline FPs observed in enterprise environments. The base64offset modifier catches encoded payloads regardless of character alignment.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "PowerShell Download Cradle Execution"
+        },
+        {
+          "name": "Rule ID",
+          "value": "7a4f3682-1dba-4c9f-b5e2-8f9a0b3c4d5e"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/execution/win_powershell_download_cradle.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Filtered Chocolatey, winget, and VS Code update download patterns to suppress known FPs in developer workstations. Retained broad cradle coverage to catch obfuscated variants.\n"
+        },
+        {
+          "name": "Rule Title",
+          "value": "Suspicious PowerShell Encoded Command Execution"
+        },
+        {
+          "name": "Rule ID",
+          "value": "6f3e2571-0c9a-4b8e-a4d1-7e8f9a2b3c4d"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/execution/win_powershell_encoded_cmd.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded SCCM (ccmexec.exe), Azure AD Connect, and Defender parent processes to eliminate baseline FPs observed in enterprise environments. The base64offset modifier catches encoded payloads regardless of character alignment.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1047",
+      "tactic": "execution",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: WMI Process Creation via WMIC Command Line | Tuning: Excluded SCOM monitoring agents (MonitoringHost.exe, HealthService.exe) and machine account ($) WMI activity that generates high-volume baseline events. Focused on explicit 'process call create' syntax.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "WMI Process Creation via WMIC Command Line"
+        },
+        {
+          "name": "Rule ID",
+          "value": "9c6b5804-3fdc-4eb1-d7a4-0b1c2d5e6f7a"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/execution/win_wmi_process_call_create.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded SCOM monitoring agents (MonitoringHost.exe, HealthService.exe) and machine account ($) WMI activity that generates high-volume baseline events. Focused on explicit 'process call create' syntax.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1486",
+      "tactic": "impact",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Ransomware Mass File Rename Activity | Tuning: Excluded legitimate encryption tools and system temp directories. Known ransomware extensions provide high-fidelity detection. The .purplelocked extension is specific to PurpleForge's safe ransomware simulator.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Ransomware Mass File Rename Activity"
+        },
+        {
+          "name": "Rule ID",
+          "value": "b6e2da6e-9bf7-4ac1-f3c0-6d7e8f1a2b3c"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/impact/win_ransomware_mass_file_rename.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded legitimate encryption tools and system temp directories. Known ransomware extensions provide high-fidelity detection. The .purplelocked extension is specific to PurpleForge's safe ransomware simulator.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1490",
+      "tactic": "impact",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Shadow Copy Deletion via vssadmin | Tuning: Excluded Veeam and Acronis backup agents that legitimately manage shadow copies. VSS deletion outside backup contexts is a critical ransomware indicator and the most reliable pre-encryption detection signal.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Shadow Copy Deletion via vssadmin"
+        },
+        {
+          "name": "Rule ID",
+          "value": "a5d1cf5d-8ae6-4fb0-e2b9-5c6d7e0f1a2b"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/impact/win_vssadmin_shadowcopy_delete.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded Veeam and Acronis backup agents that legitimately manage shadow copies. VSS deletion outside backup contexts is a critical ransomware indicator and the most reliable pre-encryption detection signal.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1021.002",
+      "tactic": "lateral-movement",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Executable Dropped on Admin Share | Tuning: Excluded SCCM distribution (ccmsetup, ccmcache), GPO scripts, and WSUS staging directories. Executables dropped on admin shares outside these paths indicate unauthorized lateral movement.\n || Rule: PsExec Service Installation via SMB | Tuning: Excluded SolarWinds and PDQ Deploy administrative service installations. PSEXESVC and variants are strong indicators of PsExec lateral movement. Critical severity due to direct remote code execution capability.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Executable Dropped on Admin Share"
+        },
+        {
+          "name": "Rule ID",
+          "value": "b4e0da42-7bf5-4ac0-f1c8-4d5e6f9a0b1c"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/lateral_movement/win_admin_share_executable_drop.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded SCCM distribution (ccmsetup, ccmcache), GPO scripts, and WSUS staging directories. Executables dropped on admin shares outside these paths indicate unauthorized lateral movement.\n"
+        },
+        {
+          "name": "Rule Title",
+          "value": "PsExec Service Installation via SMB"
+        },
+        {
+          "name": "Rule ID",
+          "value": "a3d9cf31-6ae4-4fb9-e0b7-3c4d5e8f9a0b"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/lateral_movement/win_smb_psexec_service_install.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded SolarWinds and PDQ Deploy administrative service installations. PSEXESVC and variants are strong indicators of PsExec lateral movement. Critical severity due to direct remote code execution capability.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1021.001",
+      "tactic": "lateral-movement",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: RDP Loopback Tunnel via Port Forwarding | Tuning: Excluded legitimate mstsc.exe launched from explorer.exe with /v: flag. Port forwarding to 3389 via netsh portproxy, SSH -L, plink, or chisel is highly suspicious and indicates tunneled RDP lateral movement.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "RDP Loopback Tunnel via Port Forwarding"
+        },
+        {
+          "name": "Rule ID",
+          "value": "d6a2fc64-9db7-4ce2-b3e0-6f7a8b1c2d3e"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/lateral_movement/win_rdp_loopback_tunnel.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded legitimate mstsc.exe launched from explorer.exe with /v: flag. Port forwarding to 3389 via netsh portproxy, SSH -L, plink, or chisel is highly suspicious and indicates tunneled RDP lateral movement.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1021.006",
+      "tactic": "lateral-movement",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: WinRM Remote PowerShell Session Spawn | Tuning: Excluded DSC configuration management and Exchange Management Shell which legitimately spawn processes through WinRM. wsmprovhost.exe spawning reconnaissance or LOLBin processes outside these contexts is suspicious.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "WinRM Remote PowerShell Session Spawn"
+        },
+        {
+          "name": "Rule ID",
+          "value": "c5f1eb53-8ca6-4bd1-a2d9-5e6f7a0b1c2d"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/lateral_movement/win_winrm_remote_powershell_spawn.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded DSC configuration management and Exchange Management Shell which legitimately spawn processes through WinRM. wsmprovhost.exe spawning reconnaissance or LOLBin processes outside these contexts is suspicious.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1136.001",
+      "tactic": "persistence",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: New Local User Account Created | Tuning: Excluded domain join utilities (djoin.exe, netdom.exe), machine account names ending in $, and SCCM provisioning. Focused on net.exe /add to catch both interactive and scripted user creation.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "New Local User Account Created"
+        },
+        {
+          "name": "Rule ID",
+          "value": "c3f9eb37-6caf-4bd4-a0d7-3e4f5a8b9c0d"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/persistence/win_new_local_user_created.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded domain join utilities (djoin.exe, netdom.exe), machine account names ending in $, and SCCM provisioning. Focused on net.exe /add to catch both interactive and scripted user creation.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1547.001",
+      "tactic": "persistence",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Registry Run Key Persistence | Tuning: Excluded OneDriveSetup, SecurityHealth, Teams, Spotify, and corporate VPN auto-start registry entries. System processes (svchost, csrss) creating Run keys are also filtered as baseline OS behavior.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Registry Run Key Persistence"
+        },
+        {
+          "name": "Rule ID",
+          "value": "a1d7c915-4aed-4fb2-e8b5-1c2d3e6f7a8b"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/persistence/win_registry_run_key_persistence.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded OneDriveSetup, SecurityHealth, Teams, Spotify, and corporate VPN auto-start registry entries. System processes (svchost, csrss) creating Run keys are also filtered as baseline OS behavior.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1053.005",
+      "tactic": "persistence",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Suspicious Scheduled Task Creation | Tuning: Filtered Windows Update orchestrator, Office C2R, and defrag maintenance tasks. Required both schtasks create AND suspicious action paths (Temp, Downloads, encoded commands, LOLBins) to reduce noise.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Suspicious Scheduled Task Creation"
+        },
+        {
+          "name": "Rule ID",
+          "value": "b2e8da26-5bfe-4ac3-f9c6-2d3e4f7a8b9c"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/persistence/win_schtasks_suspicious_creation.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Filtered Windows Update orchestrator, Office C2R, and defrag maintenance tasks. Required both schtasks create AND suspicious action paths (Temp, Downloads, encoded commands, LOLBins) to reduce noise.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1546.003",
+      "tactic": "persistence",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: WMI Event Subscription Persistence | Tuning: Excluded SCOM and ConfigMgr WMI event operations. WMI event subscription creation is rarely legitimate outside monitoring infrastructure, warranting critical severity.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "WMI Event Subscription Persistence"
+        },
+        {
+          "name": "Rule ID",
+          "value": "d4a0fc48-7db0-4ce5-b1e8-4f5a6b9c0d1e"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/persistence/win_wmi_event_subscription.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded SCOM and ConfigMgr WMI event operations. WMI event subscription creation is rarely legitimate outside monitoring infrastructure, warranting critical severity.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1574.011",
+      "tactic": "privilege-escalation",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Suspicious Service Binary Path Modification | Tuning: Excluded MSI installers and TrustedInstaller service updates. Required both sc config binpath AND suspicious path indicators (Temp, AppData, script extensions) to minimize false positives from legitimate service updates.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Suspicious Service Binary Path Modification"
+        },
+        {
+          "name": "Rule ID",
+          "value": "a7d3cf7b-0ae3-4fb8-e4b1-7c8d9e2f3a4b"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/privilege_escalation/win_service_binary_path_change.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded MSI installers and TrustedInstaller service updates. Required both sc config binpath AND suspicious path indicators (Temp, AppData, script extensions) to minimize false positives from legitimate service updates.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1134.001",
+      "tactic": "privilege-escalation",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: Token Impersonation with SeDebugPrivilege or SeImpersonatePrivilege | Tuning: Excluded Defender and SYSTEM svchost operations. Named tools (JuicyPotato, PrintSpoofer, etc.) provide strong signal even without command-line analysis. Command-line keywords catch Meterpreter and CobaltStrike commands.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "Token Impersonation with SeDebugPrivilege or SeImpersonatePrivilege"
+        },
+        {
+          "name": "Rule ID",
+          "value": "f6c2be6a-9fd2-4ea7-d3a0-6b7c8d1e2f3a"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/privilege_escalation/win_token_impersonation_privs.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Excluded Defender and SYSTEM svchost operations. Named tools (JuicyPotato, PrintSpoofer, etc.) provide strong signal even without command-line analysis. Command-line keywords catch Meterpreter and CobaltStrike commands.\n"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1548.002",
+      "tactic": "privilege-escalation",
+      "score": 100,
+      "color": "#2ecc71",
+      "comment": "Rule: UAC Bypass via Fodhelper.exe | Tuning: Only SystemSettings.exe is excluded as a legitimate fodhelper child. Any script interpreter spawned by fodhelper.exe is highly suspicious and warrants critical severity.\n",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Rule Title",
+          "value": "UAC Bypass via Fodhelper.exe"
+        },
+        {
+          "name": "Rule ID",
+          "value": "e5b1ad59-8ec1-4df6-c2f9-5a6b7c0d1e2f"
+        },
+        {
+          "name": "Rule File",
+          "value": "rules/privilege_escalation/win_uac_bypass_fodhelper.yml"
+        },
+        {
+          "name": "Tuning Notes",
+          "value": "Only SystemSettings.exe is excluded as a legitimate fodhelper child. Any script interpreter spawned by fodhelper.exe is highly suspicious and warrants critical severity.\n"
+        }
+      ]
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#e74c3c",
+      "#f39c12",
+      "#2ecc71"
+    ],
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legendItems": [
+    {
+      "color": "#2ecc71",
+      "label": "Verified Detection-as-Code Rule (Passed CI/CD Assertion)"
+    },
+    {
+      "color": "#e74c3c",
+      "label": "Uncovered / No Verified Rule"
+    }
+  ],
+  "metadata": [
+    {
+      "name": "Pipeline",
+      "value": "PurpleForge Detection-as-Code"
+    },
+    {
+      "name": "Author",
+      "value": "Vemula Moksha"
+    },
+    {
+      "name": "Target Lab",
+      "value": "Hyper-V Active Directory (DC01, WS01)"
+    }
+  ]
+}

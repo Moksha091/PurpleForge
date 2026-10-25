@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-10-25T06:16:08.000Z",
+  "rule": {
+    "level": 0,
+    "description": "Test event"
+  },
+  "agent": {
+    "id": "001",
+    "name": "WS01",
+    "ip": "10.10.10.20"
+  },
+  "manager": {
+    "name": "wazuh-manager"
+  },
+  "id": "d1e5e216-574f-4915-a445-a5e01ee7b5cd",
+  "data": {
+    "win": {
+      "system": {
+        "eventID": "1",
+        "channel": "Microsoft-Windows-Sysmon/Operational",
+        "computer": "DC01.corp.purpleforge.local",
+        "providerName": "Microsoft-Windows-Sysmon",
+        "systemTime": "2026-10-25T06:16:08.000Z",
+        "eventRecordID": "92078"
+      },
+      "eventdata": {
+        "image": "C:\\Windows\\System32\\vssadmin.exe",
+        "commandLine": "vssadmin create shadow /for=C:",
+        "parentImage": "C:\\Windows\\System32\\cmd.exe",
+        "user": "CORP\\redteam"
+      }
+    }
+  }
+}

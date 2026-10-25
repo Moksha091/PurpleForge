@@ -1,0 +1,60 @@
+title: Suspicious PowerShell Encoded Command Execution
+id: 6f3e2571-0c9a-4b8e-a4d1-7e8f9a2b3c4d
+status: stable
+description: |
+  Detects execution of PowerShell with Base64-encoded command arguments (-EncodedCommand,
+  -enc, -e) commonly used by adversaries to obfuscate malicious payloads during initial
+  access, lateral movement, and post-exploitation. This rule is tuned to exclude known
+  legitimate encoded invocations from SCCM and Azure AD Connect.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.execution
+  - attack.t1059.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_process:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  selection_encoded:
+    CommandLine|contains:
+      - '-EncodedCommand'
+      - '-enc '
+      - '-e '
+      - '-ec '
+    CommandLine|base64offset|contains:
+      - 'Invoke-Expression'
+      - 'IEX'
+      - 'Start-Process'
+      - 'Net.WebClient'
+      - 'DownloadString'
+      - 'DownloadFile'
+  filter_sccm:
+    ParentImage|endswith:
+      - '\ccmexec.exe'
+      - '\sccm\CcmExec.exe'
+  filter_azuread:
+    ParentImage|endswith:
+      - '\AzureADConnect.exe'
+    User|contains: 'NT AUTHORITY'
+  filter_system_updates:
+    ParentImage|endswith:
+      - '\MpCmdRun.exe'
+      - '\MsMpEng.exe'
+  condition: selection_process and selection_encoded and not filter_sccm and not filter_azuread and not filter_system_updates
+falsepositives:
+  - SCCM client task sequences using encoded PowerShell
+  - Azure AD Connect sync scripts
+  - Windows Defender scheduled scans triggering PowerShell
+level: high
+custom:
+  mitre_technique: T1059.001
+  mitre_tactic: execution
+  tp_file: tests/tp/T1059.001_encoded.json
+  tuning_notes: >
+    Excluded SCCM (ccmexec.exe), Azure AD Connect, and Defender parent processes
+    to eliminate baseline FPs observed in enterprise environments. The base64offset
+    modifier catches encoded payloads regardless of character alignment.

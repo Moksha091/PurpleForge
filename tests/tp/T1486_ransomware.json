@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-10-25T06:16:08.000Z",
+  "rule": {
+    "level": 0,
+    "description": "Test event"
+  },
+  "agent": {
+    "id": "001",
+    "name": "WS01",
+    "ip": "10.10.10.20"
+  },
+  "manager": {
+    "name": "wazuh-manager"
+  },
+  "id": "90407ba3-de56-4b13-a324-7e76c502e05c",
+  "data": {
+    "win": {
+      "system": {
+        "eventID": "11",
+        "channel": "Microsoft-Windows-Sysmon/Operational",
+        "computer": "WS01.corp.purpleforge.local",
+        "providerName": "Microsoft-Windows-Sysmon",
+        "systemTime": "2026-10-25T06:16:08.000Z",
+        "eventRecordID": "18374"
+      },
+      "eventdata": {
+        "image": "C:\\Users\\redteam\\Tools\\ransomware_sim.exe",
+        "user": "CORP\\redteam",
+        "targetFilename": "C:\\Users\\Public\\Documents\\Finance_Share\\Q4_Report.docx.purplelocked"
+      }
+    }
+  }
+}

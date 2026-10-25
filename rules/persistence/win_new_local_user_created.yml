@@ -1,0 +1,45 @@
+title: New Local User Account Created
+id: c3f9eb37-6caf-4bd4-a0d7-3e4f5a8b9c0d
+status: stable
+description: |
+  Detects creation of new local user accounts via net.exe, net1.exe, or PowerShell
+  cmdlets. Adversaries create local accounts for persistence after initial access.
+  Tuned to exclude machine account provisioning and domain join operations.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.persistence
+  - attack.t1136.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_net_user:
+    Image|endswith:
+      - '\net.exe'
+      - '\net1.exe'
+    CommandLine|contains|all:
+      - 'user'
+      - '/add'
+  filter_domain_join:
+    ParentImage|endswith:
+      - '\djoin.exe'
+      - '\netdom.exe'
+  filter_machine_accounts:
+    CommandLine|endswith: '$'
+  filter_sccm_provisioning:
+    ParentImage|endswith: '\ccmsetup.exe'
+  condition: selection_net_user and not filter_domain_join and not filter_machine_accounts and not filter_sccm_provisioning
+falsepositives:
+  - Domain join operations creating machine accounts
+  - SCCM client provisioning tasks
+  - IT helpdesk creating local admin accounts on endpoints
+level: high
+custom:
+  mitre_technique: T1136.001
+  mitre_tactic: persistence
+  tp_file: tests/tp/T1136.001_new_user.json
+  tuning_notes: >
+    Excluded domain join utilities (djoin.exe, netdom.exe), machine account names
+    ending in $, and SCCM provisioning. Focused on net.exe /add to catch both
+    interactive and scripted user creation.

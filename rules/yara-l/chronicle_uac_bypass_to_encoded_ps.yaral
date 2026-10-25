@@ -1,0 +1,61 @@
+/*
+ * chronicle_uac_bypass_to_encoded_ps.yaral
+ * Detects UAC bypass (fodhelper.exe) followed by encoded PowerShell execution
+ * on the same host within a 5-minute window - a common privilege escalation
+ * to post-exploitation chain.
+ * Google SecOps (Chronicle) YARA-L 2.0 multi-event correlation rule.
+ */
+
+rule chronicle_uac_bypass_to_encoded_ps {
+  meta:
+    author = "Vemula Moksha"
+    description = "Correlates UAC bypass via fodhelper.exe with subsequent encoded PowerShell command execution on the same host, indicating privilege escalation to post-exploitation."
+    severity = "CRITICAL"
+    mitre_attack = "T1548.002, T1059.001"
+    mitre_tactic = "privilege_escalation, execution"
+    reference = "https://attack.mitre.org/techniques/T1548/002/"
+    status = "stable"
+    created = "2026-10-25"
+
+  events:
+    // Event 1: UAC bypass via fodhelper launching suspicious child
+    $uac_bypass.metadata.event_type = "PROCESS_LAUNCH"
+    $uac_bypass.principal.hostname = $hostname
+    $uac_bypass.principal.process.file.full_path = /fodhelper\.exe$/i
+    (
+      $uac_bypass.target.process.file.full_path = /cmd\.exe$/i or
+      $uac_bypass.target.process.file.full_path = /powershell\.exe$/i or
+      $uac_bypass.target.process.file.full_path = /pwsh\.exe$/i
+    )
+    $uac_bypass.metadata.event_timestamp.seconds = $bypass_time
+
+    // Event 2: Encoded PowerShell command execution
+    $encoded_ps.metadata.event_type = "PROCESS_LAUNCH"
+    $encoded_ps.principal.hostname = $hostname
+    (
+      $encoded_ps.target.process.file.full_path = /powershell\.exe$/i or
+      $encoded_ps.target.process.file.full_path = /pwsh\.exe$/i
+    )
+    (
+      $encoded_ps.target.process.command_line = /\-[Ee]nc/ or
+      $encoded_ps.target.process.command_line = /\-[Ee]ncodedCommand/ or
+      $encoded_ps.target.process.command_line = /\-[Ee][Cc] / or
+      $encoded_ps.target.process.command_line = /FromBase64String/
+    )
+    $encoded_ps.metadata.event_timestamp.seconds = $ps_time
+
+    // Temporal ordering
+    $ps_time >= $bypass_time
+
+  match:
+    $hostname over 5m
+
+  outcome:
+    $risk_score = max(95)
+    $bypass_child = array_distinct($uac_bypass.target.process.file.full_path)
+    $encoded_command = array_distinct($encoded_ps.target.process.command_line)
+    $acting_user = array_distinct($encoded_ps.principal.user.userid)
+
+  condition:
+    $uac_bypass and $encoded_ps
+}

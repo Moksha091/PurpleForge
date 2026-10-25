@@ -1,0 +1,32 @@
+{
+  "generated_utc": "2026-10-25T06:16:09.302302+00:00",
+  "coverage": {
+    "total_emulated_techniques": 26,
+    "detected_techniques": 5,
+    "coverage_percentage": 19.23
+  },
+  "v1_baseline_untuned": {
+    "total_alerts": 1420,
+    "true_positives": 58,
+    "false_positives": 1362,
+    "precision": 0.0408,
+    "false_positives_per_day": 97.28,
+    "mttd_seconds": 184.5,
+    "mttr_seconds": 2450.0
+  },
+  "v2_tuned_dac": {
+    "total_alerts": 62,
+    "true_positives": 60,
+    "false_positives": 2,
+    "precision": 0.9677,
+    "false_positives_per_day": 0.14,
+    "mttd_seconds": 35.2,
+    "mttr_seconds": 59.8
+  },
+  "improvements": {
+    "fp_reduction_percent": 99.86,
+    "precision_multiplier": 23.7,
+    "mttd_reduction_seconds": 149.3,
+    "mttr_reduction_seconds": 2390.2
+  }
+}

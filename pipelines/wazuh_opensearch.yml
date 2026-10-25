@@ -1,0 +1,111 @@
+name: PurpleForge Wazuh-OpenSearch pySigma Pipeline
+priority: 20
+transformations:
+  # ── Field Name Mappings ──────────────────────────────────────────────
+  - id: wazuh_field_mapping
+    type: field_name_mapping
+    mapping:
+      EventID: data.win.system.eventID
+      Channel: data.win.system.channel
+      Computer: data.win.system.computer
+      Image: data.win.eventdata.image
+      CommandLine: data.win.eventdata.commandLine
+      ParentImage: data.win.eventdata.parentImage
+      ParentCommandLine: data.win.eventdata.parentCommandLine
+      User: data.win.eventdata.user
+      TargetFilename: data.win.eventdata.targetFilename
+      TargetObject: data.win.eventdata.targetObject
+      Details: data.win.eventdata.details
+      SourceImage: data.win.eventdata.sourceImage
+      TargetImage: data.win.eventdata.targetImage
+      GrantedAccess: data.win.eventdata.grantedAccess
+      TicketEncryptionType: data.win.eventdata.ticketEncryptionType
+      ServiceName: data.win.eventdata.serviceName
+      ScriptBlockText: data.win.eventdata.scriptBlockText
+      QueryName: data.win.eventdata.queryName
+      DestinationPort: data.win.eventdata.destinationPort
+      ShareName: data.win.eventdata.shareName
+      RelativeTargetName: data.win.eventdata.relativeTargetName
+
+  # ── Logsource Conditions: Sysmon Categories ─────────────────────────
+  - id: sysmon_process_creation
+    type: add_condition
+    conditions:
+      data.win.system.channel: "Microsoft-Windows-Sysmon/Operational"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: process_creation
+
+  - id: sysmon_process_access
+    type: add_condition
+    conditions:
+      data.win.system.channel: "Microsoft-Windows-Sysmon/Operational"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: process_access
+
+  - id: sysmon_registry_set
+    type: add_condition
+    conditions:
+      data.win.system.channel: "Microsoft-Windows-Sysmon/Operational"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: registry_set
+
+  - id: sysmon_file_event
+    type: add_condition
+    conditions:
+      data.win.system.channel: "Microsoft-Windows-Sysmon/Operational"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: file_event
+
+  - id: sysmon_dns_query
+    type: add_condition
+    conditions:
+      data.win.system.channel: "Microsoft-Windows-Sysmon/Operational"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: dns_query
+
+  - id: sysmon_network_connection
+    type: add_condition
+    conditions:
+      data.win.system.channel: "Microsoft-Windows-Sysmon/Operational"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        category: network_connection
+
+  # ── Logsource Conditions: Windows Services ──────────────────────────
+  - id: windows_security
+    type: add_condition
+    conditions:
+      data.win.system.channel: "Security"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        service: security
+
+  - id: windows_system
+    type: add_condition
+    conditions:
+      data.win.system.channel: "System"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        service: system
+
+  - id: windows_powershell
+    type: add_condition
+    conditions:
+      data.win.system.channel: "Microsoft-Windows-PowerShell/Operational"
+    rule_conditions:
+      - type: logsource
+        product: windows
+        service: powershell

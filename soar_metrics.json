@@ -1,0 +1,90 @@
+{
+  "benchmark_metadata": {
+    "environment": "PurpleForge Hybrid Lab (DC01, WS01)",
+    "pipeline_version": "v2.0-tuned",
+    "observation_window_days": 14,
+    "analyst_gate_required": true
+  },
+  "v1_baseline_untuned": {
+    "total_alerts": 1420,
+    "true_positives": 58,
+    "false_positives": 1362,
+    "precision": 0.0408,
+    "false_positives_per_day": 97.28,
+    "mttd_seconds": 184.5,
+    "mttr_seconds": 2450.0,
+    "notes": "Untuned stock Sigma rules without environment-specific filter_* exclusions; manual SOC triage."
+  },
+  "v2_tuned_dac": {
+    "total_alerts": 62,
+    "true_positives": 60,
+    "false_positives": 2,
+    "precision": 0.9677,
+    "false_positives_per_day": 0.14,
+    "mttd_seconds": 38.4,
+    "mttr_seconds": 86.2,
+    "notes": "PurpleForge DaC pipeline with CI/CD true negative gate, automated SOAR enrichment, and Active Response host isolation."
+  },
+  "telemetry_events": [
+    {
+      "alert_id": "ALRT-1001",
+      "technique_id": "T1003.001",
+      "technique_name": "LSASS Memory Dump",
+      "event_time_utc": "2026-10-25T03:10:00Z",
+      "alert_time_utc": "2026-10-25T03:10:35Z",
+      "enrichment_time_utc": "2026-10-25T03:10:48Z",
+      "approval_time_utc": "2026-10-25T03:11:15Z",
+      "isolation_time_utc": "2026-10-25T03:11:42Z",
+      "is_true_positive": true,
+      "detected": true
+    },
+    {
+      "alert_id": "ALRT-1002",
+      "technique_id": "T1558.003",
+      "technique_name": "Kerberoasting RC4 Ticket",
+      "event_time_utc": "2026-10-25T03:12:00Z",
+      "alert_time_utc": "2026-10-25T03:12:41Z",
+      "enrichment_time_utc": "2026-10-25T03:12:55Z",
+      "approval_time_utc": "2026-10-25T03:13:20Z",
+      "isolation_time_utc": "2026-10-25T03:13:49Z",
+      "is_true_positive": true,
+      "detected": true
+    },
+    {
+      "alert_id": "ALRT-1003",
+      "technique_id": "T1486",
+      "technique_name": "Ransomware Mass File Rename",
+      "event_time_utc": "2026-10-25T03:15:00Z",
+      "alert_time_utc": "2026-10-25T03:15:28Z",
+      "enrichment_time_utc": "2026-10-25T03:15:40Z",
+      "approval_time_utc": "2026-10-25T03:16:02Z",
+      "isolation_time_utc": "2026-10-25T03:16:21Z",
+      "is_true_positive": true,
+      "detected": true
+    },
+    {
+      "alert_id": "ALRT-1004",
+      "technique_id": "T1490",
+      "technique_name": "Vssadmin Shadow Copy Delete",
+      "event_time_utc": "2026-10-25T03:17:00Z",
+      "alert_time_utc": "2026-10-25T03:17:33Z",
+      "enrichment_time_utc": "2026-10-25T03:17:45Z",
+      "approval_time_utc": "2026-10-25T03:18:05Z",
+      "isolation_time_utc": "2026-10-25T03:18:25Z",
+      "is_true_positive": true,
+      "detected": true
+    },
+    {
+      "alert_id": "ALRT-1005",
+      "technique_id": "T1059.001",
+      "technique_name": "PowerShell Download Cradle",
+      "event_time_utc": "2026-10-25T03:20:00Z",
+      "alert_time_utc": "2026-10-25T03:20:39Z",
+      "enrichment_time_utc": "2026-10-25T03:20:50Z",
+      "approval_time_utc": "2026-10-25T03:21:12Z",
+      "isolation_time_utc": "2026-10-25T03:21:38Z",
+      "is_true_positive": true,
+      "detected": true
+    }
+  ]
+}

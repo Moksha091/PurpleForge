@@ -1,0 +1,52 @@
+title: Suspicious Service Binary Path Modification
+id: a7d3cf7b-0ae3-4fb8-e4b1-7c8d9e2f3a4b
+status: stable
+description: |
+  Detects modification of Windows service binary paths using sc.exe config
+  command, commonly used by adversaries to hijack existing services for
+  privilege escalation or persistence via unquoted service paths.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.privilege_escalation
+  - attack.t1574.011
+  - attack.persistence
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_sc_config:
+    Image|endswith: '\sc.exe'
+    CommandLine|contains|all:
+      - 'config'
+      - 'binpath'
+  selection_suspicious_binpath:
+    CommandLine|contains:
+      - 'cmd.exe'
+      - 'powershell'
+      - '\Temp\'
+      - '\AppData\'
+      - 'http://'
+      - 'https://'
+      - '.bat'
+      - '.ps1'
+      - '.vbs'
+  filter_msi_installer:
+    ParentImage|endswith:
+      - '\msiexec.exe'
+      - '\setup.exe'
+  filter_windows_update:
+    CommandLine|contains: 'TrustedInstaller'
+  condition: selection_sc_config and selection_suspicious_binpath and not filter_msi_installer and not filter_windows_update
+falsepositives:
+  - MSI-based software installations modifying service paths
+  - Windows TrustedInstaller updating system services
+level: high
+custom:
+  mitre_technique: T1574.011
+  mitre_tactic: privilege_escalation
+  tp_file: tests/tp/T1574.011_service_binpath.json
+  tuning_notes: >
+    Excluded MSI installers and TrustedInstaller service updates. Required both
+    sc config binpath AND suspicious path indicators (Temp, AppData, script
+    extensions) to minimize false positives from legitimate service updates.

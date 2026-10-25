@@ -1,0 +1,42 @@
+title: WMI Process Creation via WMIC Command Line
+id: 9c6b5804-3fdc-4eb1-d7a4-0b1c2d5e6f7a
+status: stable
+description: |
+  Detects usage of wmic.exe or WmiPrvSE.exe to create remote or local processes
+  via the 'process call create' method, a technique commonly used for lateral
+  movement and execution. Tuned to exclude WMI-based monitoring tools.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.execution
+  - attack.t1047
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'process'
+      - 'call'
+      - 'create'
+  filter_scom_monitoring:
+    ParentImage|endswith:
+      - '\MonitoringHost.exe'
+      - '\HealthService.exe'
+  filter_wmiprvse_normal:
+    ParentImage|endswith: '\WmiPrvSE.exe'
+    User|endswith: '$'
+  condition: selection_wmic and not filter_scom_monitoring and not filter_wmiprvse_normal
+falsepositives:
+  - System Center Operations Manager (SCOM) monitoring probes
+  - Machine account WMI health checks
+level: high
+custom:
+  mitre_technique: T1047
+  mitre_tactic: execution
+  tp_file: tests/tp/T1047_wmi_process.json
+  tuning_notes: >
+    Excluded SCOM monitoring agents (MonitoringHost.exe, HealthService.exe) and
+    machine account ($) WMI activity that generates high-volume baseline events.
+    Focused on explicit 'process call create' syntax.

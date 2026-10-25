@@ -1,0 +1,60 @@
+/*
+ * chronicle_ransomware_burst_and_vss.yaral
+ * Detects ransomware kill chain: VSS shadow copy deletion followed by
+ * mass file rename with known ransomware extensions within 5 minutes.
+ * Google SecOps (Chronicle) YARA-L 2.0 multi-event correlation rule.
+ */
+
+rule chronicle_ransomware_burst_and_vss {
+  meta:
+    author = "Vemula Moksha"
+    description = "Correlates VSS shadow copy deletion with mass file rename (ransomware encryption) on the same host within a 5-minute window."
+    severity = "CRITICAL"
+    mitre_attack = "T1490, T1486"
+    mitre_tactic = "impact"
+    reference = "https://attack.mitre.org/techniques/T1486/"
+    status = "stable"
+    created = "2026-10-25"
+
+  events:
+    // Event 1: VSS shadow copy deletion
+    $vss_delete.metadata.event_type = "PROCESS_LAUNCH"
+    $vss_delete.principal.hostname = $hostname
+    (
+      $vss_delete.target.process.command_line = /vssadmin.*delete.*shadows/ nocase or
+      $vss_delete.target.process.command_line = /wmic.*shadowcopy.*delete/ nocase
+    )
+    $vss_delete.metadata.event_timestamp.seconds = $vss_time
+
+    // Event 2: Mass file rename with ransomware extensions
+    $file_rename.metadata.event_type = "FILE_CREATION"
+    $file_rename.principal.hostname = $hostname
+    (
+      $file_rename.target.file.full_path = /\.locked$/ nocase or
+      $file_rename.target.file.full_path = /\.encrypted$/ nocase or
+      $file_rename.target.file.full_path = /\.crypted$/ nocase or
+      $file_rename.target.file.full_path = /\.purplelocked$/ nocase or
+      $file_rename.target.file.full_path = /\.lockbit$/ nocase or
+      $file_rename.target.file.full_path = /\.conti$/ nocase or
+      $file_rename.target.file.full_path = /\.ryuk$/ nocase or
+      $file_rename.target.file.full_path = /\.hive$/ nocase or
+      $file_rename.target.file.full_path = /\.basta$/ nocase
+    )
+    $file_rename.metadata.event_timestamp.seconds = $rename_time
+
+    // Temporal ordering: VSS delete happens before file renames
+    $rename_time > $vss_time
+
+  match:
+    $hostname over 5m
+
+  outcome:
+    $risk_score = max(95)
+    $vss_delete_count = count_distinct($vss_delete.metadata.id)
+    $renamed_file_count = count_distinct($file_rename.target.file.full_path)
+    $first_vss_time = min($vss_time)
+    $first_rename_time = min($rename_time)
+
+  condition:
+    $vss_delete and #file_rename >= 10
+}

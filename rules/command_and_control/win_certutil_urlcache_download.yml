@@ -1,0 +1,45 @@
+title: Certutil URL Cache Download
+id: e3b9ad3b-6ec4-4df9-c0f7-3a4b5c8d9e0f
+status: stable
+description: |
+  Detects usage of certutil.exe with -urlcache -f flags to download files
+  from the internet. Adversaries abuse certutil as a LOLBin to bypass
+  application whitelisting and download malicious payloads.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.command_and_control
+  - attack.t1105
+  - attack.defense_evasion
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_certutil_download:
+    Image|endswith: '\certutil.exe'
+    CommandLine|contains|all:
+      - '-urlcache'
+      - '-f'
+  filter_certificate_enrollment:
+    CommandLine|contains:
+      - '-addstore'
+      - '-viewstore'
+      - 'CA '
+      - 'Root '
+  filter_pki_auto_enrollment:
+    ParentImage|endswith:
+      - '\CertEnrollCtrl.exe'
+      - '\svchost.exe'
+  condition: selection_certutil_download and not filter_certificate_enrollment and not filter_pki_auto_enrollment
+falsepositives:
+  - Certificate enrollment and management operations
+  - PKI auto-enrollment services
+level: high
+custom:
+  mitre_technique: T1105
+  mitre_tactic: command_and_control
+  tp_file: tests/tp/T1105_certutil.json
+  tuning_notes: >
+    Excluded certificate enrollment (addstore, viewstore) and PKI auto-enrollment
+    svchost operations. Certutil -urlcache -f for arbitrary file download is
+    well-documented LOLBin behavior and warrants investigation.

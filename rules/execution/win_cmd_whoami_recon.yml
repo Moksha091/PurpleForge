@@ -1,0 +1,55 @@
+title: Whoami Reconnaissance via cmd.exe
+id: 8b5a4793-2ecb-4da0-c6f3-9a0b1c4d5e6f
+status: stable
+description: |
+  Detects execution of whoami.exe or similar reconnaissance commands (hostname,
+  ipconfig, net user, systeminfo) spawned from cmd.exe, commonly observed in
+  post-exploitation reconnaissance phases. Tuned to exclude IT admin jump hosts
+  and SCCM remote execution.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.execution
+  - attack.t1059.003
+  - attack.discovery
+  - attack.t1033
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_parent:
+    ParentImage|endswith: '\cmd.exe'
+  selection_recon:
+    Image|endswith:
+      - '\whoami.exe'
+      - '\hostname.exe'
+      - '\ipconfig.exe'
+      - '\systeminfo.exe'
+    CommandLine|contains:
+      - 'whoami'
+      - '/all'
+      - 'hostname'
+      - 'ipconfig'
+      - 'systeminfo'
+  filter_sccm_remote:
+    ParentImage|endswith:
+      - '\ccmexec.exe'
+      - '\tsagent.exe'
+  filter_admin_scripts:
+    ParentCommandLine|contains:
+      - 'C:\Admin\Scripts'
+      - 'C:\ProgramData\ManageEngine'
+  condition: selection_parent and selection_recon and not filter_sccm_remote and not filter_admin_scripts
+falsepositives:
+  - IT administrators running whoami on jump hosts
+  - SCCM remote execution task sequences
+  - ManageEngine Desktop Central inventory scripts
+level: medium
+custom:
+  mitre_technique: T1059.003
+  mitre_tactic: execution
+  tp_file: tests/tp/T1059.003_whoami.json
+  tuning_notes: >
+    Excluded SCCM remote agents and ManageEngine inventory scripts that routinely
+    invoke whoami/systeminfo during compliance checks. Parent process constraint
+    (cmd.exe) reduces noise from Explorer shell invocations.

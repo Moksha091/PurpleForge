@@ -1,0 +1,47 @@
+title: RDP Loopback Tunnel via Port Forwarding
+id: d6a2fc64-9db7-4ce2-b3e0-6f7a8b1c2d3e
+status: stable
+description: |
+  Detects RDP connections to localhost/127.0.0.1 or SSH/netsh port forwarding
+  establishing RDP tunnels. Adversaries use this to bypass network segmentation
+  and pivot through compromised hosts using tunneled RDP sessions.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.lateral_movement
+  - attack.t1021.001
+  - attack.command_and_control
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_rdp_tunnel:
+    CommandLine|contains:
+      - 'portproxy'
+      - 'listenport=3389'
+      - 'connectport=3389'
+      - '127.0.0.1:3389'
+      - 'localhost:3389'
+      - '-L 3389'
+      - '-R 3389'
+      - 'ssh -L'
+      - 'plink -L'
+      - 'chisel'
+  filter_legitimate_rdp_gateway:
+    Image|endswith:
+      - '\mstsc.exe'
+    ParentImage|endswith: '\explorer.exe'
+    CommandLine|contains: '/v:'
+  condition: selection_rdp_tunnel and not filter_legitimate_rdp_gateway
+falsepositives:
+  - Legitimate RDP gateway connections
+  - IT administrators using SSH tunnels for remote management (should be documented)
+level: high
+custom:
+  mitre_technique: T1021.001
+  mitre_tactic: lateral_movement
+  tp_file: tests/tp/T1021.001_rdp_tunnel.json
+  tuning_notes: >
+    Excluded legitimate mstsc.exe launched from explorer.exe with /v: flag.
+    Port forwarding to 3389 via netsh portproxy, SSH -L, plink, or chisel
+    is highly suspicious and indicates tunneled RDP lateral movement.

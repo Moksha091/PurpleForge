@@ -1,0 +1,1012 @@
+[
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "0828f2c9-0f46-4aa6-b5d5-1bc7b3026030",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "13",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "85769"
+        },
+        "eventdata": {
+          "image": "C:\\Users\\admin\\AppData\\Local\\Microsoft\\OneDrive\\OneDriveSetup.exe",
+          "user": "CORP\\admin",
+          "targetObject": "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\OneDrive",
+          "details": "C:\\Users\\admin\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe /background"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "e0893f11-8c08-4cd9-a8f0-3edac2457381",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "10",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "89840"
+        },
+        "eventdata": {
+          "user": "NT AUTHORITY\\SYSTEM",
+          "sourceImage": "C:\\Windows\\System32\\svchost.exe",
+          "targetImage": "C:\\Windows\\System32\\lsass.exe",
+          "grantedAccess": "0x1410"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "2a941819-2a2b-4039-8ede-ead6877f9474",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "4769",
+          "channel": "Security",
+          "computer": "DC01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "55565"
+        },
+        "eventdata": {
+          "user": "WS01$",
+          "ticketEncryptionType": "0x17",
+          "serviceName": "krbtgt"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "076c2764-cda8-4a3e-b8e9-1910df08fa36",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "3",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "93503"
+        },
+        "eventdata": {
+          "image": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+          "user": "CORP\\admin",
+          "destinationPort": "8443"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "37888c90-5e20-4d49-a5f8-769bbea3099b",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "98343"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe -EncodedCommand cwBjAGMALQBjAGwAaQBlAG4AdAA=",
+          "parentImage": "C:\\Windows\\CCM\\ccmexec.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "3091a7da-2201-4205-940a-ffc646b335a4",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "25919"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe Get-Process | Sort-Object CPU -Descending",
+          "parentImage": "C:\\Windows\\explorer.exe",
+          "user": "CORP\\admin"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "b09ed096-b365-4726-8445-fbf3fbf3c891",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "84967"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\schtasks.exe",
+          "commandLine": "schtasks /create /tn \"\\Microsoft\\Windows\\UpdateOrchestrator\\Reboot\" /tr reboot /sc once",
+          "parentImage": "C:\\Windows\\System32\\svchost.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "fff5b65d-448d-4cc3-8e86-4072ea91511b",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "9106"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\net.exe",
+          "commandLine": "net user WS02$ /add",
+          "parentImage": "C:\\Windows\\System32\\djoin.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "2b205637-8c22-4868-84c8-5c8f04e66d03",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "21880"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\wbem\\wmic.exe",
+          "commandLine": "wmic process call create \"powershell -c Get-Service\"",
+          "parentImage": "C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "6245ac25-52a5-4ee7-9d26-f731d0f3f88d",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "77230"
+        },
+        "eventdata": {
+          "image": "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.2301.6-0\\MsMpEng.exe",
+          "commandLine": "MsMpEng.exe",
+          "parentImage": "C:\\Windows\\System32\\services.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "ec7b0351-71b9-46e8-98b0-c91eb1bc09f1",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "56458"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\mstsc.exe",
+          "commandLine": "mstsc.exe /v:10.10.10.10",
+          "parentImage": "C:\\Windows\\explorer.exe",
+          "user": "CORP\\admin"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "a4ee8afa-a058-4df3-9773-d5baf78bf2db",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "50448"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\wevtutil.exe",
+          "commandLine": "wevtutil cl Application",
+          "parentImage": "C:\\Windows\\System32\\schtasks.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "8050f143-e3e0-4eb2-b67b-50bed3335153",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "77220"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe Set-MpPreference -DisableRealtimeMonitoring $false",
+          "parentImage": "C:\\Windows\\System32\\gpscript.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "651cf2f9-2486-48af-a41a-27785d7606a7",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "4104",
+          "channel": "Microsoft-Windows-PowerShell/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "496"
+        },
+        "eventdata": {
+          "user": "NT AUTHORITY\\SYSTEM",
+          "scriptBlockText": "Test-AMSIDetection -Path 'C:\\test.ps1' | Get-MpPreference"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "c4b0a220-e07c-4655-ae41-5e97aaf6585e",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "49096"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\rundll32.exe",
+          "commandLine": "rundll32.exe shell32.dll,Control_RunDLL desk.cpl",
+          "parentImage": "C:\\Windows\\explorer.exe",
+          "user": "CORP\\admin"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "bfb903f4-5d46-4be2-a601-593479bf5f97",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "22",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "49517"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\svchost.exe",
+          "user": "NT AUTHORITY\\NETWORK SERVICE",
+          "queryName": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0.update.microsoft.com"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "ae626fc5-161f-4338-ba90-af1808b491ef",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "97653"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\certutil.exe",
+          "commandLine": "certutil.exe -urlcache -f -addstore Root C:\\certs\\company_root.cer",
+          "parentImage": "C:\\Windows\\System32\\svchost.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "207f2802-f6e5-4e7c-813f-68f52fec3164",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "3",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "36772"
+        },
+        "eventdata": {
+          "image": "C:\\Program Files\\nodejs\\node.exe",
+          "user": "CORP\\developer",
+          "destinationPort": "8080"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "03ce25b2-bdf2-4395-83ba-67dac6684406",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "63353"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\vssadmin.exe",
+          "commandLine": "vssadmin.exe delete shadows /for=E: /all /quiet",
+          "parentImage": "C:\\Program Files\\Veeam\\Backup and Replication\\veeam.backup.shell.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "93890c1f-8f7d-407e-ba27-dc4c21f2e71d",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "11",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "35504"
+        },
+        "eventdata": {
+          "image": "C:\\Program Files\\7-Zip\\7z.exe",
+          "user": "CORP\\admin",
+          "targetFilename": "C:\\Users\\admin\\Documents\\archive.7z.encrypted"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "9a6f4983-2fa0-45b8-b122-4686d7e56f2e",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "81467"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\sc.exe",
+          "commandLine": "sc config MyApp binpath= \"C:\\Program Files\\MyApp\\svc.exe\"",
+          "parentImage": "C:\\Windows\\System32\\msiexec.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "2872f7bb-69e4-4e7a-9717-3a7f770e3a67",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "91243"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe",
+          "commandLine": "SystemSettings.exe",
+          "parentImage": "C:\\Windows\\System32\\fodhelper.exe",
+          "user": "CORP\\admin"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "72a58e37-814d-4913-af5b-42eeab3cfc64",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "86286"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe -Command \"(New-Object Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')\"",
+          "parentImage": "C:\\Windows\\System32\\cmd.exe",
+          "user": "CORP\\admin"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "1c0bb645-f64c-4fdd-90a5-08dc70bbb0a9",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "48184"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\net.exe",
+          "commandLine": "net user sccmadmin P@ssword /add",
+          "parentImage": "C:\\Windows\\ccmsetup\\ccmsetup.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "a25e2b98-06dc-4eef-8fc8-5b6d480bd51a",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "7045",
+          "channel": "System",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "11861"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\Temp\\PDQDeployRunner\\PDQDeployRunner-1.exe",
+          "user": "NT AUTHORITY\\SYSTEM",
+          "serviceName": "PDQDeployRunner-1"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "d828ea8b-ca69-456d-80a9-d914f528208f",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "3",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "57736"
+        },
+        "eventdata": {
+          "image": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+          "user": "CORP\\admin",
+          "destinationPort": "8443"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "65981065-311b-4084-8ee9-5ce7629a9ca2",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "22",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "45754"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\svchost.exe",
+          "user": "NT AUTHORITY\\NETWORK SERVICE",
+          "queryName": "ocsp.digicert.com"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "5d563cdd-8ed0-4ba8-ba4d-eb2a87c6a43d",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "57973"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe Get-Mailbox -ResultSize Unlimited",
+          "parentImage": "C:\\Windows\\System32\\wsmprovhost.exe",
+          "user": "CORP\\exchangeadmin"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "7eb03f31-8f26-4d46-9222-cb2323b4d276",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "63590"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe Set-WmiInstance -Namespace root\\ccm -Class ConfigMgr_EventConsumer",
+          "parentImage": "C:\\Windows\\System32\\svchost.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-25T06:16:08.000Z",
+    "rule": {
+      "level": 0,
+      "description": "Test event"
+    },
+    "agent": {
+      "id": "001",
+      "name": "WS01",
+      "ip": "10.10.10.20"
+    },
+    "manager": {
+      "name": "wazuh-manager"
+    },
+    "id": "a83ec956-9e05-4aaf-84ed-7aa5698cfbf8",
+    "data": {
+      "win": {
+        "system": {
+          "eventID": "1",
+          "channel": "Microsoft-Windows-Sysmon/Operational",
+          "computer": "WS01.corp.purpleforge.local",
+          "providerName": "Microsoft-Windows-Sysmon",
+          "systemTime": "2026-10-25T06:16:08.000Z",
+          "eventRecordID": "82743"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe Set-MpPreference -DisableRealtimeMonitoring $false",
+          "parentImage": "C:\\Program Files (x86)\\Microsoft Intune Management Extension\\IntuneManagementExtension.exe",
+          "user": "NT AUTHORITY\\SYSTEM"
+        }
+      }
+    }
+  }
+]

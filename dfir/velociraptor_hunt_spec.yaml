@@ -1,0 +1,63 @@
+name: PurpleForge_Incident_Triage_Hunt
+description: |
+  Automated DFIR triage hunt dispatched via Velociraptor API following SOAR alert
+  for high-severity incidents (T1486 Ransomware, T1003 LSASS Dump).
+  Collects rapid forensic triage artifacts using KAPE targets and acquires full physical memory.
+
+type: HUNT
+author: Vemula Moksha
+created: "2026-10-25T03:12:00Z"
+
+# Target endpoints matching lab tags or hostname
+select_expression: |
+  SELECT * FROM info()
+  WHERE Hostname =~ 'WS01|DC01'
+
+artifacts:
+  # ───────────────────────────────────────────────────────────────────────────
+  # 1. KAPE Fast Triage Collection
+  # ───────────────────────────────────────────────────────────────────────────
+  - artifact: Windows.KapeFiles.Targets
+    parameters:
+      # KAPE Target modules to collect
+      KapeTriage: Y
+      EventLogs: Y
+      RegistryHives: Y
+      Amcache: Y
+      Prefetch: Y
+      PowershellConsole: Y
+      SRUM: Y
+      WebBrowsers: N
+      FileExclusions: ".*\\.iso,.*\\.vmdk,.*\\.vhd,.*\\.vhdx"
+      UploadToBlob: Y
+      UploadDirectory: "/velociraptor/uploads/triage_kape"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 2. Raw Volatile Physical Memory Acquisition
+  # ───────────────────────────────────────────────────────────────────────────
+  - artifact: Windows.Memory.Acquisition
+    parameters:
+      # Driver-based acquisition via WinPmem / LinPmem
+      DriverName: "winpmem.sys"
+      Format: "raw"
+      Compress: "gzip"
+      MaxMemoryMB: 8192
+      UploadToBlob: Y
+      UploadDirectory: "/velociraptor/uploads/memory_dumps"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 3. Live Process and Network State Snapshot
+  # ───────────────────────────────────────────────────────────────────────────
+  - artifact: Windows.System.Pslist
+    parameters:
+      ProcessRegex: "."
+      IncludeSignatures: Y
+
+  - artifact: Windows.Network.Netstat
+    parameters:
+      IncludeProcessInfo: Y
+      ListenOnly: N
+
+output:
+  format: json
+  destination: /velociraptor/hunts/PurpleForge_Incident_Triage_Hunt/

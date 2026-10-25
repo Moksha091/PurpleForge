@@ -1,0 +1,63 @@
+/*
+ * chronicle_lsass_dump_and_exfil.yaral
+ * Detects LSASS memory dump followed by network exfiltration of the dump file
+ * from the same host within a 5-minute window.
+ * Google SecOps (Chronicle) YARA-L 2.0 multi-event correlation rule.
+ */
+
+rule chronicle_lsass_dump_and_exfil {
+  meta:
+    author = "Vemula Moksha"
+    description = "Correlates LSASS process access (credential dumping) with subsequent network connection or file creation of dump artifacts on the same host within 5 minutes."
+    severity = "CRITICAL"
+    mitre_attack = "T1003.001, T1041"
+    mitre_tactic = "credential_access, exfiltration"
+    reference = "https://attack.mitre.org/techniques/T1003/001/"
+    status = "stable"
+    created = "2026-10-25"
+
+  events:
+    // Event 1: LSASS process access with suspicious grants
+    $lsass_access.metadata.event_type = "PROCESS_OPEN"
+    $lsass_access.principal.hostname = $hostname
+    $lsass_access.target.process.file.full_path = /lsass\.exe$/i
+    (
+      $lsass_access.security_result.detection_fields["GrantedAccess"] = "0x1fffff" or
+      $lsass_access.security_result.detection_fields["GrantedAccess"] = "0x1010" or
+      $lsass_access.security_result.detection_fields["GrantedAccess"] = "0x1038"
+    )
+    // Exclude system processes
+    NOT $lsass_access.principal.process.file.full_path = /svchost\.exe$/i
+    NOT $lsass_access.principal.process.file.full_path = /csrss\.exe$/i
+    NOT $lsass_access.principal.process.file.full_path = /winlogon\.exe$/i
+    NOT $lsass_access.principal.process.file.full_path = /MsMpEng\.exe$/i
+    $lsass_access.metadata.event_timestamp.seconds = $access_time
+
+    // Event 2: Dump file creation or network exfiltration
+    $exfil.metadata.event_type = "NETWORK_CONNECTION" or
+    $exfil.metadata.event_type = "FILE_CREATION"
+    $exfil.principal.hostname = $hostname
+    (
+      $exfil.target.file.full_path = /\.dmp$/i or
+      $exfil.target.file.full_path = /lsass/i or
+      $exfil.target.file.full_path = /procdump/i or
+      $exfil.target.file.full_path = /comsvcs/i or
+      $exfil.target.url != ""
+    )
+    $exfil.metadata.event_timestamp.seconds = $exfil_time
+
+    // Temporal ordering
+    $exfil_time > $access_time
+
+  match:
+    $hostname over 5m
+
+  outcome:
+    $risk_score = max(95)
+    $dump_tool = array_distinct($lsass_access.principal.process.file.full_path)
+    $exfil_target = array_distinct($exfil.target.url)
+    $dump_file = array_distinct($exfil.target.file.full_path)
+
+  condition:
+    $lsass_access and $exfil
+}

@@ -1,0 +1,54 @@
+title: Registry Run Key Persistence
+id: a1d7c915-4aed-4fb2-e8b5-1c2d3e6f7a8b
+status: stable
+description: |
+  Detects modification of Windows Registry Run/RunOnce keys used to establish
+  persistence. Adversaries add entries pointing to malicious executables that
+  launch on user logon. Tuned to exclude common legitimate auto-start entries.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.persistence
+  - attack.t1547.001
+logsource:
+  product: windows
+  category: registry_set
+detection:
+  selection_runkey:
+    TargetObject|contains:
+      - '\CurrentVersion\Run\'
+      - '\CurrentVersion\RunOnce\'
+    EventID: 13
+  filter_legitimate_software:
+    Details|contains:
+      - 'OneDrive'
+      - 'SecurityHealth'
+      - 'WindowsDefender'
+      - 'Teams'
+      - 'Spotify'
+      - 'iTunesHelper'
+      - 'Google Update'
+      - 'Cisco AnyConnect'
+  filter_onedrive_setup:
+    Image|endswith:
+      - '\OneDriveSetup.exe'
+      - '\OneDrive.exe'
+  filter_system_process:
+    Image|endswith:
+      - '\svchost.exe'
+      - '\csrss.exe'
+      - '\services.exe'
+  condition: selection_runkey and not filter_legitimate_software and not filter_onedrive_setup and not filter_system_process
+falsepositives:
+  - Legitimate software installations adding auto-start entries
+  - OneDrive, Teams, Spotify auto-start configuration
+  - Corporate VPN clients (Cisco AnyConnect)
+level: high
+custom:
+  mitre_technique: T1547.001
+  mitre_tactic: persistence
+  tp_file: tests/tp/T1547.001_runkey.json
+  tuning_notes: >
+    Excluded OneDriveSetup, SecurityHealth, Teams, Spotify, and corporate VPN
+    auto-start registry entries. System processes (svchost, csrss) creating Run
+    keys are also filtered as baseline OS behavior.

@@ -1,0 +1,38 @@
+title: Event Log Cleared via wevtutil
+id: f8c4be86-1fd9-4ea4-d5a2-8b9c0d3e4f5a
+status: stable
+description: |
+  Detects usage of wevtutil.exe to clear Windows event logs. Adversaries use
+  wevtutil cl to remove Security, System, and Sysmon logs to cover their tracks.
+  Monitors process creation for wevtutil with 'cl' (clear-log) argument.
+author: Vemula Moksha
+date: 2026/10/25
+tags:
+  - attack.defense_evasion
+  - attack.t1070.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  filter_log_rotation_scheduled:
+    ParentImage|endswith:
+      - '\TaskScheduler.exe'
+      - '\schtasks.exe'
+    User: 'NT AUTHORITY\SYSTEM'
+  condition: selection_wevtutil and not filter_log_rotation_scheduled
+falsepositives:
+  - Scheduled log rotation tasks running as SYSTEM
+level: high
+custom:
+  mitre_technique: T1070.001
+  mitre_tactic: defense_evasion
+  tp_file: tests/tp/T1070.001_wevtutil.json
+  tuning_notes: >
+    Only excluded SYSTEM-level scheduled task log rotation. Interactive or
+    script-driven wevtutil cl operations warrant investigation. Pairs with
+    Event ID 1102 rule for complete log-clearing coverage.
