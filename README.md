@@ -1,6 +1,6 @@
 # PurpleForge: Detection-as-Code & Automated Purple Team Pipeline
 
-[![CI/CD Detection Tests](https://github.com/purpleforge/purpleforge/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/purpleforge/purpleforge/actions/workflows/ci-cd.yml)
+[![Detection-as-Code CI/CD](https://github.com/Moksha091/PurpleForge/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/purpleforge/purpleforge/actions/workflows/ci-cd.yml)
 [![Sigma Rules](https://img.shields.io/badge/Sigma%20Rules-26%20Verified-brightgreen.svg)](rules/)
 [![YARA-L Rules](https://img.shields.io/badge/YARA--L%202.0-5%20Rules-blue.svg)](rules/yara-l/)
 [![MITRE ATT&CK](https://img.shields.io/badge/ATT%26CK%20Coverage-100%25%20Validated-success.svg)](attack_navigator_layer.json)
