@@ -14,21 +14,23 @@ logsource:
   product: windows
   category: process_creation
 detection:
-  selection_vss_ntds:
+  selection_vss_tool:
     CommandLine|contains:
       - 'vssadmin'
       - 'wmic shadowcopy'
       - 'ntdsutil'
+  selection_vss_action:
     CommandLine|contains:
       - 'ntds'
       - 'shadow'
       - 'create'
       - 'IFM'
       - 'activate instance ntds'
-  selection_copy_ntds:
+  selection_copy_tool:
     CommandLine|contains:
       - 'copy'
       - 'esentutl'
+  selection_copy_target:
     CommandLine|contains:
       - 'ntds.dit'
       - 'SYSTEM'
@@ -36,7 +38,7 @@ detection:
     ParentImage|endswith:
       - '\veeam.backup.shell.exe'
       - '\wbadmin.exe'
-  condition: (selection_vss_ntds or selection_copy_ntds) and not filter_legitimate_backup
+  condition: ((selection_vss_tool and selection_vss_action) or (selection_copy_tool and selection_copy_target)) and not filter_legitimate_backup
 falsepositives:
   - Veeam Backup performing scheduled AD backups
   - Windows Server Backup (wbadmin) operations

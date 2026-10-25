@@ -30,11 +30,12 @@ detection:
       - 'stop WinDefend'
       - 'disable WinDefend'
       - 'stop MpsSvc'
-  selection_reg_disable:
+  selection_reg_disable_key:
     Image|endswith: '\reg.exe'
     CommandLine|contains:
       - 'DisableAntiSpyware'
       - 'DisableRealtimeMonitoring'
+  selection_reg_disable_val:
     CommandLine|contains:
       - 'DWORD'
       - '0x1'
@@ -45,7 +46,7 @@ detection:
     ParentImage|endswith:
       - '\IntuneManagementExtension.exe'
       - '\AgentExecutor.exe'
-  condition: (selection_powershell_disable or selection_sc_disable or selection_reg_disable) and not filter_gpo_application and not filter_intune_management
+  condition: (selection_powershell_disable or selection_sc_disable or (selection_reg_disable_key and selection_reg_disable_val)) and not filter_gpo_application and not filter_intune_management
 falsepositives:
   - Group Policy applying Defender configuration
   - Intune/MDM management policies
