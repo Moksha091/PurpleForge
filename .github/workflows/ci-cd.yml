@@ -8,6 +8,7 @@ on:
       - 'pipelines/**'
       - 'tests/**'
       - 'tools/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [main]
     paths:
@@ -15,6 +16,7 @@ on:
       - 'pipelines/**'
       - 'tests/**'
       - 'tools/**'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 env:
@@ -127,6 +129,7 @@ jobs:
     needs: test-detections
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -140,6 +143,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Deploy monitors to production OpenSearch
+        if: env.OPENSEARCH_URL != ''
         env:
           OPENSEARCH_URL: ${{ secrets.PROD_OPENSEARCH_URL }}
           OPENSEARCH_USER: ${{ secrets.PROD_OPENSEARCH_USER }}
