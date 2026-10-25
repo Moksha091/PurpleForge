@@ -15,6 +15,13 @@ import subprocess
 import time
 import yaml
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 try:
     from opensearchpy import OpenSearch
     from tabulate import tabulate
@@ -36,6 +43,37 @@ OPENSEARCH_PASS = os.environ.get("OPENSEARCH_PASS", "admin")
 INDEX_TP = "test-tp"
 INDEX_TN = "test-tn"
 
+INDEX_CONFIG = {
+    "settings": {
+        "index": {
+            "number_of_shards": 1,
+            "number_of_replicas": 0
+        },
+        "analysis": {
+            "normalizer": {
+                "lowercase_normalizer": {
+                    "type": "custom",
+                    "filter": ["lowercase"]
+                }
+            }
+        }
+    },
+    "mappings": {
+        "dynamic_templates": [
+            {
+                "strings_as_keywords": {
+                    "match_mapping_type": "string",
+                    "mapping": {
+                        "type": "keyword",
+                        "normalizer": "lowercase_normalizer",
+                        "ignore_above": 8192
+                    }
+                }
+            }
+        ]
+    }
+}
+
 
 def get_client():
     """Create OpenSearch client with proper SSL/auth configuration."""
@@ -56,6 +94,38 @@ def get_client():
     return client
 
 
+def setup_index(client, index_name):
+    """Delete index if exists and recreate with case-insensitive keyword settings."""
+    try:
+        if client.indices.exists(index=index_name):
+            client.indices.delete(index=index_name)
+        client.indices.create(index=index_name, body=INDEX_CONFIG)
+    except Exception as e:
+        print(f"  [!] setup_index notice for {index_name}: {e}")
+
+
+def setup_index_template(client):
+    """Ensure all test-* indices map string fields to case-insensitive keywords."""
+    template_body = {
+        "index_patterns": ["test-*"],
+        "settings": INDEX_CONFIG["settings"],
+        "mappings": INDEX_CONFIG["mappings"]
+    }
+    try:
+        client.indices.put_template(name="purpleforge_test_template", body=template_body)
+        print("  [+] Configured case-insensitive keyword template for test-* indices")
+    except Exception as e:
+        try:
+            composable_body = {
+                "index_patterns": ["test-*"],
+                "template": template_body
+            }
+            client.indices.put_index_template(name="purpleforge_test_template", body=composable_body)
+            print("  [+] Configured composable keyword template for test-* indices")
+        except Exception as e2:
+            print(f"  [!] Warning: Failed to put index template: {e2}")
+
+
 def cleanup_indices(client):
     """Delete test indices if they exist."""
     for idx in [INDEX_TP, INDEX_TN]:
@@ -71,6 +141,7 @@ def index_document(client, index, doc, doc_id=None):
 
 def index_tn_baseline(client):
     """Index all benign baseline events into test-tn index."""
+    setup_index(client, INDEX_TN)
     tn_path = os.path.join(TESTS_TN_DIR, "benign_baseline.json")
     if not os.path.exists(tn_path):
         print(f"  [!] TN baseline not found: {tn_path}")
@@ -82,9 +153,11 @@ def index_tn_baseline(client):
     if isinstance(events, list):
         for i, event in enumerate(events):
             index_document(client, INDEX_TN, event, doc_id=f"tn-{i}")
+        client.indices.refresh(index=INDEX_TN)
         return len(events)
     else:
         index_document(client, INDEX_TN, events, doc_id="tn-0")
+        client.indices.refresh(index=INDEX_TN)
         return 1
 
 
@@ -120,7 +193,6 @@ def compile_sigma_rule(rule_path):
             err = result.stderr.strip() or result.stdout.strip()
             return None, err
     except FileNotFoundError:
-        # Fallback if sigma binary is invoked via sys.executable python script wrapper
         try:
             cmd = [
                 sys.executable, "-m", "sigma_cli.entrypoint", "convert",
@@ -161,13 +233,15 @@ def search_index(client, index, query_string):
             "query": {
                 "query_string": {
                     "query": query_string,
-                    "default_operator": "AND"
+                    "default_operator": "AND",
+                    "analyze_wildcard": True
                 }
             }
         }
         result = client.search(index=index, body=body)
         return result["hits"]["total"]["value"]
     except Exception as e:
+        print(f"  [!] Search error on {index} query [{query_string[:60]}...]: {e}")
         return -1
 
 
@@ -197,9 +271,10 @@ def main():
         print("  [!] Ensure OpenSearch is running on localhost:9200")
         sys.exit(1)
 
-    # Cleanup and index TN baseline
+    # Setup index template and prepare test indices
     print("\n[*] Preparing test indices...")
     cleanup_indices(client)
+    setup_index_template(client)
     tn_count = index_tn_baseline(client)
     print(f"  [+] Indexed {tn_count} TN (benign) events")
 
@@ -227,12 +302,11 @@ def main():
         tp_path = os.path.join(PROJECT_ROOT, tp_file.replace("/", os.sep)) if tp_file else None
         tp_indexed = False
         if tp_path and os.path.exists(tp_path):
-            # Clean TP index for each rule test
-            if client.indices.exists(index=INDEX_TP):
-                client.indices.delete(index=INDEX_TP)
+            setup_index(client, INDEX_TP)
             with open(tp_path, "r", encoding="utf-8") as f:
                 tp_event = json.load(f)
             index_document(client, INDEX_TP, tp_event, doc_id="tp-0")
+            client.indices.refresh(index=INDEX_TP)
             tp_indexed = True
 
         # Compile Sigma rule

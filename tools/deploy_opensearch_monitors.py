@@ -187,7 +187,7 @@ def build_monitor_payload(rule_data, query_dsl, destination_id):
             {
                 "search": {
                     "indices": [TARGET_INDEX],
-                    "query": query_dsl if isinstance(query_dsl, dict) else {"query_string": {"query": query_dsl}}
+                    "query": query_dsl if isinstance(query_dsl, dict) else {"query_string": {"query": query_dsl, "analyze_wildcard": True}}
                 }
             }
         ],

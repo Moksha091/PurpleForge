@@ -1,6 +1,6 @@
 # PurpleForge Detection Engineering & SOC Metrics Report
 
-**Generated UTC:** `2026-10-25T06:16:09.302302+00:00`  
+**Generated UTC:** `2026-10-25T07:14:26.229128+00:00`  
 **Evaluation Scope:** Adversary Emulation Pipeline (`DC01`, `WS01`) vs. Production SecOps Stack  
 **Detection Coverage:** **`19.23%`** (5/26 MITRE ATT&CK Techniques)
 
