@@ -244,6 +244,37 @@ def discover_rules():
     return sorted(rules)
 
 
+def bootstrap_alerting_index(client):
+    """Ensure .opendistro-alerting-config system index is bootstrapped."""
+    try:
+        resp = client.transport.perform_request("GET", "/_plugins/_alerting/monitors/_search")
+    except Exception as e:
+        # If .opendistro-alerting-config index does not exist, bootstrap with a temporary monitor
+        if "index_not_found_exception" in str(e).lower() or ".opendistro-alerting-config" in str(e).lower() or "404" in str(e):
+            print("  [*] Bootstrapping .opendistro-alerting-config system index...")
+            try:
+                init_payload = {
+                    "name": "Bootstrap-Init-Monitor",
+                    "type": "monitor",
+                    "enabled": False,
+                    "schedule": {"period": {"interval": 60, "unit": "MINUTES"}},
+                    "inputs": [{
+                        "search": {
+                            "indices": [TARGET_INDEX],
+                            "query": {"size": 0, "query": {"match_all": {}}}
+                        }
+                    }],
+                    "triggers": []
+                }
+                res = client.transport.perform_request("POST", "/_plugins/_alerting/monitors", body=init_payload)
+                m_id = res.get("_id")
+                if m_id:
+                    client.transport.perform_request("DELETE", f"/_plugins/_alerting/monitors/{m_id}")
+                print("  [+] Alerting system index initialized successfully")
+            except Exception as be:
+                print(f"  [!] Notice during bootstrap: {be}")
+
+
 def main():
     print("=" * 70)
     print("PurpleForge — OpenSearch Monitor Deployment")
@@ -257,6 +288,9 @@ def main():
     except Exception as e:
         print(f"  [!] Failed to connect: {e}")
         sys.exit(1)
+
+    # Bootstrap Alerting plugin system index if needed
+    bootstrap_alerting_index(client)
 
     # Create/get webhook destination
     print("\n[*] Configuring Shuffle SOAR webhook destination...")
@@ -288,11 +322,15 @@ def main():
         try:
             # Check for existing monitor with same name
             monitor_name = monitor_payload["name"]
-            search_resp = client.transport.perform_request(
-                "GET", "/_plugins/_alerting/monitors/_search",
-                body={"query": {"term": {"monitor.name.keyword": monitor_name}}}
-            )
-            existing = search_resp.get("hits", {}).get("hits", [])
+            existing = []
+            try:
+                search_resp = client.transport.perform_request(
+                    "GET", "/_plugins/_alerting/monitors/_search",
+                    body={"query": {"term": {"monitor.name.keyword": monitor_name}}}
+                )
+                existing = search_resp.get("hits", {}).get("hits", [])
+            except Exception:
+                pass
 
             if existing:
                 monitor_id = existing[0]["_id"]

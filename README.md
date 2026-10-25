@@ -1,6 +1,6 @@
 # PurpleForge: Detection-as-Code & Automated Purple Team Pipeline
 
-[![Detection-as-Code CI/CD](https://github.com/Moksha091/PurpleForge/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/purpleforge/purpleforge/actions/workflows/ci-cd.yml)
+[![Detection-as-Code CI/CD](https://github.com/Moksha091/PurpleForge/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Moksha091/PurpleForge/actions/workflows/ci-cd.yml)
 [![Sigma Rules](https://img.shields.io/badge/Sigma%20Rules-26%20Verified-brightgreen.svg)](rules/)
 [![YARA-L Rules](https://img.shields.io/badge/YARA--L%202.0-5%20Rules-blue.svg)](rules/yara-l/)
 [![MITRE ATT&CK](https://img.shields.io/badge/ATT%26CK%20Coverage-100%25%20Validated-success.svg)](attack_navigator_layer.json)
@@ -213,6 +213,13 @@ python tools/deploy_opensearch_monitors.py
 python tools/calculate_metrics.py
 ```
 
+### Pipeline Verification & Coverage Evidence
+
+| Automated CI/CD Detection Test Harness | MITRE ATT&CK Matrix Navigator Coverage |
+| :---: | :---: |
+| ![CI/CD Test Runner Passing](docs/ci_cd_passing_tests.png) | ![ATT&CK Navigator Coverage](docs/attack_navigator_coverage.png) |
+
+
 ---
 
 ## 6. Adversary Emulation & Safe Ransomware Drill
@@ -246,7 +253,14 @@ View the completed post-incident investigation report in [`dfir/IR_Report_Templa
 
 ---
 
-## 8. Author & License
+## 8. Lab Handover & Troubleshooting Playbook
+
+For architecture specifications, known container issues (Shuffle DB OOM resolution, OpenSearch Alerting index bootstrap), and diagnostic commands, consult the technical handover guide:
+- [`docs/HANDOVER_TROUBLESHOOTING.md`](docs/HANDOVER_TROUBLESHOOTING.md)
+
+---
+
+## 9. Author & License
 
 - **Author:** Vemula Moksha
 - **Project:** PurpleForge Detection-as-Code & Automated Purple Team Pipeline
