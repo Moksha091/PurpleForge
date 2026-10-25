@@ -39,7 +39,7 @@ services:
       - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
       - "bootstrap.memory_lock=true"
       - "discovery.type=single-node"
-      - "DISABLE_INSTALL_DEMO_CONFIG=true"
+      - "DISABLE_INSTALL_DEMO_CONFIG=false"
       - "DISABLE_SECURITY_PLUGIN=false"
       - "INDEXER_USERNAME=${INDEXER_USERNAME:-admin}"
       - "INDEXER_PASSWORD=${INDEXER_PASSWORD:-SecretAdmin123!}"
@@ -146,6 +146,8 @@ services:
       - "SHUFFLE_FILE_LOCATION=/shuffle-files"
       - "BACKEND_HOSTNAME=shuffle-backend"
     mem_limit: 512m
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       secops_net:
         ipv4_address: 172.28.0.21
