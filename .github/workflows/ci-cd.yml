@@ -56,12 +56,8 @@ jobs:
         env:
           discovery.type: single-node
           DISABLE_SECURITY_PLUGIN: "true"
+          OPENSEARCH_INITIAL_ADMIN_PASSWORD: "PurpleForgePass2026!#"
           OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
-        options: >-
-          --health-cmd "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\\|yellow\"'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -76,24 +72,37 @@ jobs:
 
       - name: Wait for OpenSearch to be healthy
         run: |
-          echo "Waiting for OpenSearch..."
+          echo "Waiting for OpenSearch to be ready..."
+          READY=0
           for i in $(seq 1 30); do
-            if curl -s http://localhost:9200/_cluster/health | grep -q '"status"'; then
-              echo "OpenSearch is ready!"
+            if curl -s -f http://localhost:9200/_cluster/health | grep -q '"status"'; then
+              echo "OpenSearch is ready on HTTP!"
+              echo "OPENSEARCH_URL=http://localhost:9200" >> $GITHUB_ENV
+              echo "OPENSEARCH_USER=" >> $GITHUB_ENV
+              echo "OPENSEARCH_PASS=" >> $GITHUB_ENV
+              READY=1
+              break
+            elif curl -s -k -f -u admin:PurpleForgePass2026!# https://localhost:9200/_cluster/health | grep -q '"status"'; then
+              echo "OpenSearch is ready on HTTPS!"
+              echo "OPENSEARCH_URL=https://localhost:9200" >> $GITHUB_ENV
+              echo "OPENSEARCH_USER=admin" >> $GITHUB_ENV
+              echo "OPENSEARCH_PASS=PurpleForgePass2026!#" >> $GITHUB_ENV
+              READY=1
               break
             fi
             echo "Attempt $i/30..."
             sleep 5
           done
+          if [ $READY -eq 0 ]; then
+            echo "[-] OpenSearch failed to respond in 150 seconds."
+            docker ps -a
+            exit 1
+          fi
 
       - name: Seed test logs
         run: python tools/seed_test_logs.py
 
       - name: Run detection tests
-        env:
-          OPENSEARCH_URL: http://localhost:9200
-          OPENSEARCH_USER: ""
-          OPENSEARCH_PASS: ""
         run: python tools/test_runner.py
 
   generate-artifacts:
