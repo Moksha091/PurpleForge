@@ -5,7 +5,7 @@
 [![YARA-L Rules](https://img.shields.io/badge/YARA--L%202.0-5%20Rules-blue.svg)](rules/yara-l/)
 [![MITRE ATT&CK](https://img.shields.io/badge/ATT%26CK%20Coverage-100%25%20Validated-success.svg)](attack_navigator_layer.json)
 [![Python Version](https://img.shields.io/badge/Python-3.11-informational.svg)](requirements.txt)
-[![License](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **PurpleForge** is an enterprise-grade Detection-as-Code (DaC) and Automated Purple Team engineering pipeline. It connects a local Hyper-V Active Directory target environment (`DC01`, `WS01`) to a containerized cloud `SECOPS` stack (Wazuh SIEM, OpenSearch, Shuffle SOAR, DFIR-IRIS, MISP, and Velociraptor) over a secure Tailscale mesh network, governed by an automated GitHub Actions CI/CD test harness.
 
