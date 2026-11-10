@@ -264,4 +264,4 @@ For architecture specifications, known container issues (Shuffle DB OOM resoluti
 
 - **Author:** Vemula Moksha
 - **Project:** PurpleForge Detection-as-Code & Automated Purple Team Pipeline
-- **License:** Apache License 2.0
+- **License:** MIT license
