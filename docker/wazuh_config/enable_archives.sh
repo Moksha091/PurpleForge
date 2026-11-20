@@ -31,23 +31,16 @@ fi
 # 2. Enable archives in Filebeat
 if [ -f "$FILEBEAT_CONF" ]; then
     echo "  [+] Enabling archives module in ${FILEBEAT_CONF}..."
-    sed -i 's/archives:\s*false/archives: true/g' "$FILEBEAT_CONF"
-    # Ensure archives section is enabled if commented
-    sed -i 's/#archives:/archives:/g' "$FILEBEAT_CONF"
-    sed -i 's/#\s*enabled:\s*false/  enabled: true/g' "$FILEBEAT_CONF"
+    if ! grep -Eq '^[[:space:]]*archives:[[:space:]]*$' "$FILEBEAT_CONF"; then
+        echo "  [-] Error: archives section not found in ${FILEBEAT_CONF}." >&2
+        exit 1
+    fi
+    sed -i '/^[[:space:]]*archives:[[:space:]]*$/,/^[^[:space:]]/ s/^\([[:space:]]*enabled:[[:space:]]*\)false/\1true/' "$FILEBEAT_CONF"
     echo "  [✓] Filebeat updated: archives=true"
 else
     echo "  [-] Warning: ${FILEBEAT_CONF} not found."
 fi
 
-# 3. Restart Filebeat and Wazuh Manager services
-echo "[*] Restarting services to apply configuration changes..."
-if command -v systemctl >/dev/null 2>&1; then
-    systemctl restart wazuh-manager || /var/ossec/bin/wazuh-control restart
-    systemctl restart filebeat || service filebeat restart
-elif [ -f "/var/ossec/bin/wazuh-control" ]; then
-    /var/ossec/bin/wazuh-control restart
-    service filebeat restart || true
-fi
-
-echo "[✓] PurpleForge: Raw archive telemetry successfully activated (wazuh-archives-* active)!"
+# This runs during container initialization, before the supervised services start.
+# Restarting them here starts Filebeat twice and causes its data-path lock failure.
+echo "[✓] PurpleForge: Archive settings applied; Wazuh and Filebeat will start with them."

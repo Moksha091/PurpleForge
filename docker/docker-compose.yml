@@ -1,10 +1,8 @@
-version: '3.8'
-
 # PurpleForge: Containerized Cloud SECOPS Stack
 # Profiles:
 #   siem: wazuh.indexer, wazuh.manager, wazuh.dashboard
 #   soar: shuffle-backend, shuffle-frontend, shuffle-database, orborus
-#   dfir: dfir-iris-web, dfir-iris-db, velociraptor
+#   dfir: DFIR-IRIS app, worker, database, RabbitMQ, Velociraptor
 # Strict memory constraints configured to run in 4GB-6GB host environments.
 
 networks:
@@ -20,7 +18,10 @@ volumes:
   wazuh_manager_data:
   wazuh_manager_etc:
   shuffle_db_data:
-  iris_db_data:
+  iris_db_data_v2:
+  iris_downloads:
+  iris_user_templates:
+  iris_server_data:
   velociraptor_data:
 
 services:
@@ -175,43 +176,102 @@ services:
   # DFIR: DFIR-IRIS Web Platform & Case Management
   # ───────────────────────────────────────────────────────────────────────────
   dfir-iris-db:
-    image: postgres:14-alpine
+    image: ghcr.io/dfir-iris/iriswebapp_db:v2.4.29
     container_name: purpleforge-iris-db
     hostname: dfir-iris-db
     restart: unless-stopped
     profiles: ["soar", "dfir"]
     environment:
-      - "POSTGRES_USER=${IRIS_DB_USER:-iris}"
+      - "POSTGRES_USER=${IRIS_DB_USER:-postgres}"
       - "POSTGRES_PASSWORD=${IRIS_DB_PASSWORD:-SecretIrisDB123!}"
       - "POSTGRES_DB=iris_db"
+      - "POSTGRES_ADMIN_USER=${IRIS_DB_ADMIN_USER:-irisadmin}"
+      - "POSTGRES_ADMIN_PASSWORD=${IRIS_DB_ADMIN_PASSWORD:-SecretIrisAdmin123!}"
     mem_limit: 256m
     volumes:
-      - iris_db_data:/var/lib/postgresql/data
+      - iris_db_data_v2:/var/lib/postgresql/data
     networks:
       secops_net:
         ipv4_address: 172.28.0.30
 
   dfir-iris-web:
-    image: dfiriris/iris-web:v2.4.4
+    image: ghcr.io/dfir-iris/iriswebapp_app:v2.4.29
     container_name: purpleforge-iris-web
     hostname: dfir-iris-web
     restart: unless-stopped
     profiles: ["soar", "dfir"]
     ports:
-      - "8443:443"
+      - "8080:8000"
     environment:
-      - "POSTGRES_SERVER=172.28.0.30"
-      - "POSTGRES_USER=${IRIS_DB_USER:-iris}"
+      - "POSTGRES_SERVER=dfir-iris-db"
+      - "POSTGRES_USER=${IRIS_DB_USER:-postgres}"
       - "POSTGRES_PASSWORD=${IRIS_DB_PASSWORD:-SecretIrisDB123!}"
       - "POSTGRES_DB=iris_db"
       - "POSTGRES_PORT=5432"
+      - "POSTGRES_ADMIN_USER=${IRIS_DB_ADMIN_USER:-irisadmin}"
+      - "POSTGRES_ADMIN_PASSWORD=${IRIS_DB_ADMIN_PASSWORD:-SecretIrisAdmin123!}"
+      - "IRIS_ADM_USERNAME=${IRIS_ADM_USERNAME:-administrator}"
+      - "IRIS_ADM_PASSWORD=${IRIS_ADM_PASSWORD:-SecretIris123!}"
+      - "IRIS_ADM_EMAIL=${IRIS_ADM_EMAIL:-administrator@localhost}"
+      - "DOCKERIZED=1"
       - "IRIS_SECRET_KEY=${IRIS_SECRET_KEY:-ChangeMeSuperSecretKey998877}"
+      - "IRIS_SECURITY_PASSWORD_SALT=${IRIS_SECURITY_PASSWORD_SALT:-ChangeMeIrisSecuritySalt998877}"
+      - "CELERY_BROKER=amqp://dfir-iris-rabbitmq"
+    command: ["nohup", "./iris-entrypoint.sh", "iriswebapp"]
+    volumes:
+      - iris_downloads:/home/iris/downloads
+      - iris_user_templates:/home/iris/user_templates
+      - iris_server_data:/home/iris/server_data
     mem_limit: 768m
     networks:
       secops_net:
         ipv4_address: 172.28.0.31
     depends_on:
       - dfir-iris-db
+      - dfir-iris-rabbitmq
+
+  dfir-iris-worker:
+    image: ghcr.io/dfir-iris/iriswebapp_app:v2.4.29
+    container_name: purpleforge-iris-worker
+    hostname: dfir-iris-worker
+    restart: unless-stopped
+    profiles: ["soar", "dfir"]
+    command: ["./wait-for-iriswebapp.sh", "dfir-iris-web:8000", "./iris-entrypoint.sh", "iris-worker"]
+    environment:
+      - "POSTGRES_SERVER=dfir-iris-db"
+      - "POSTGRES_USER=${IRIS_DB_USER:-postgres}"
+      - "POSTGRES_PASSWORD=${IRIS_DB_PASSWORD:-SecretIrisDB123!}"
+      - "POSTGRES_DB=iris_db"
+      - "POSTGRES_PORT=5432"
+      - "POSTGRES_ADMIN_USER=${IRIS_DB_ADMIN_USER:-irisadmin}"
+      - "POSTGRES_ADMIN_PASSWORD=${IRIS_DB_ADMIN_PASSWORD:-SecretIrisAdmin123!}"
+      - "DOCKERIZED=1"
+      - "IRIS_SECRET_KEY=${IRIS_SECRET_KEY:-ChangeMeSuperSecretKey998877}"
+      - "IRIS_SECURITY_PASSWORD_SALT=${IRIS_SECURITY_PASSWORD_SALT:-ChangeMeIrisSecuritySalt998877}"
+      - "IRIS_WORKER=1"
+      - "CELERY_BROKER=amqp://dfir-iris-rabbitmq"
+    volumes:
+      - iris_downloads:/home/iris/downloads
+      - iris_user_templates:/home/iris/user_templates
+      - iris_server_data:/home/iris/server_data
+    mem_limit: 512m
+    networks:
+      - secops_net
+    depends_on:
+      - dfir-iris-db
+      - dfir-iris-rabbitmq
+      - dfir-iris-web
+
+  dfir-iris-rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: purpleforge-iris-rabbitmq
+    hostname: dfir-iris-rabbitmq
+    restart: unless-stopped
+    profiles: ["soar", "dfir"]
+    mem_limit: 256m
+    networks:
+      secops_net:
+        ipv4_address: 172.28.0.32
 
   # ───────────────────────────────────────────────────────────────────────────
   # DFIR: Velociraptor Endpoint Forensics Server

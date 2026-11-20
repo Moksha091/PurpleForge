@@ -169,12 +169,21 @@ docker compose -f docker/docker-compose.yml --profile siem up -d
 
 # Optionally start SOAR and DFIR profiles:
 docker compose -f docker/docker-compose.yml --profile soar --profile dfir up -d
+
+# DFIR-IRIS lab UI (HTTP): http://localhost:8080
 ```
 
+The official DFIR-IRIS v2.4.29 database image uses PostgreSQL 12. The Compose
+configuration stores it in a new volume and leaves any existing IRIS database
+volume untouched; back up and migrate existing case data separately before
+switching to this image.
+
 ### Step 3: Enable Raw Telemetry Archiving
-Once Wazuh Manager is running, activate raw `wazuh-archives-*` streaming:
+The mounted archive script enables raw `wazuh-archives-*` streaming during
+container initialization. If you change the script after startup, restart the
+container so the configuration is applied before Wazuh and Filebeat start:
 ```bash
-docker exec -it purpleforge-manager /entrypoint-scripts/enable_archives.sh
+docker compose -f docker/docker-compose.yml --profile siem --profile soar restart wazuh.manager
 ```
 
 ### Step 4: Provision Local Hyper-V Lab

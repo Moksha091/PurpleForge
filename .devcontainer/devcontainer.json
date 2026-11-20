@@ -11,7 +11,13 @@
     }
   },
   "postCreateCommand": "pip install -r requirements.txt",
-  "forwardPorts": [443, 3001, 3443, 8000, 8889, 9200, 1514, 1515, 55000],
+  "forwardPorts": [443, 3001, 3443, 8000, 8080, 8889, 9200, 1514, 1515, 55000],
+  "portsAttributes": {
+    "8080": {
+      "label": "DFIR-IRIS",
+      "protocol": "http"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [

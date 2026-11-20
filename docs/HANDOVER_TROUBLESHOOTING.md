@@ -14,8 +14,8 @@ PurpleForge is built as a modular, containerized security lab combining SIEM, SO
   - **Ports:** `1514` (Agent registration/events), `1515` (Auth), `55000` (REST API), Dashboard on `443` (mapped to `5601`).
 - **Shuffle SOAR (`purpleforge-shuffle-frontend`, `purpleforge-shuffle-backend`, `purpleforge-shuffle-db`):** Automated incident response and playbook execution engine.
   - **Ports:** Frontend UI on `3443` (mapped to container port `80`), Backend API/Webhooks on `3001` (mapped to container port `5001`).
-- **DFIR-IRIS (`purpleforge-iris-web`, `purpleforge-iris-db`):** Incident response management platform backed by PostgreSQL.
-  - **Ports:** Web UI on `8443` (mapped to container port `443`).
+- **DFIR-IRIS (`purpleforge-iris-web`, `purpleforge-iris-worker`, `purpleforge-iris-db`, `purpleforge-iris-rabbitmq`):** Incident response management platform, background worker, and supporting services.
+  - **Port:** Web UI on `http://localhost:8080` (mapped to the app's HTTP port `8000`).
 
 ---
 
