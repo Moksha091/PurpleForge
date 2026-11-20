@@ -1,9 +1,14 @@
 {
   "name": "PurpleForge Detection-as-Code",
-  "image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/tailscale/codespace/tailscale:1": {}
+    "ghcr.io/tailscale/codespace/tailscale": {
+      "version": "latest"
+    }
   },
   "postCreateCommand": "pip install -r requirements.txt",
   "forwardPorts": [443, 3001, 3443, 8000, 8889, 9200, 1514, 1515, 55000],
