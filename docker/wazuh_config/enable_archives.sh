@@ -36,6 +36,11 @@ if [ -f "$FILEBEAT_CONF" ]; then
         exit 1
     fi
     sed -i '/^[[:space:]]*archives:[[:space:]]*$/,/^[^[:space:]]/ s/^\([[:space:]]*enabled:[[:space:]]*\)false/\1true/' "$FILEBEAT_CONF"
+    if grep -Eq '^[[:space:]]*ssl\.verification_mode:' "$FILEBEAT_CONF"; then
+        sed -i 's/^[[:space:]]*ssl\.verification_mode:.*/  ssl.verification_mode: none/' "$FILEBEAT_CONF"
+    else
+        sed -i '/^[[:space:]]*hosts:/a\  ssl.verification_mode: none' "$FILEBEAT_CONF"
+    fi
     echo "  [✓] Filebeat updated: archives=true"
 else
     echo "  [-] Warning: ${FILEBEAT_CONF} not found."
