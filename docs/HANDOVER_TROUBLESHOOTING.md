@@ -8,8 +8,8 @@ This document outlines the architecture, current deployment status, and critical
 
 PurpleForge is built as a modular, containerized security lab combining SIEM, SOAR, and DFIR capabilities. The primary components running in the environment include:
 
-- **OpenSearch (2.11.1):** Acts as the central log indexing and alerting engine. Runs as a standalone instance (replacing the heavyweight Wazuh indexer to bypass complex TLS/security plugin constraints in lightweight dev environments).
-  - **Port:** `9200` (HTTP, security plugin disabled for local/CI stability).
+- **OpenSearch:** Acts as the central log indexing and alerting engine. The default Docker Compose profile runs the secured Wazuh Indexer over HTTPS; CI uses a standalone OpenSearch service with security disabled over HTTP.
+  - **Port:** `9200`. The detection tools default to `https://localhost:9200` with the Compose development credentials. Override with `OPENSEARCH_URL`, `OPENSEARCH_USER`, and `OPENSEARCH_PASS`, or their `INDEXER_USERNAME` and `INDEXER_PASSWORD` equivalents.
 - **Wazuh Manager & Dashboard (`purpleforge-manager`, `purpleforge-dashboard`):** Collects endpoint logs, system events, and archives.
   - **Ports:** `1514` (Agent registration/events), `1515` (Auth), `55000` (REST API), Dashboard on `443` (mapped to `5601`).
 - **Shuffle SOAR (`purpleforge-shuffle-frontend`, `purpleforge-shuffle-backend`, `purpleforge-shuffle-db`):** Automated incident response and playbook execution engine.
@@ -58,7 +58,8 @@ PurpleForge is built as a modular, containerized security lab combining SIEM, SO
 - **Root Cause:** OpenSearch Alerting creates `.opendistro-alerting-config` lazily upon first monitor creation.
 - **Resolution:** If deployment scripts fail with `Configured indices are not found: [.opendistro-alerting-config]`, bootstrap the alerting index by posting a bootstrap monitor via API:
   ```bash
-  curl -X POST "http://localhost:9200/_plugins/_alerting/monitors" \
+  curl -k -u "${OPENSEARCH_USER:-${INDEXER_USERNAME:-admin}}:${OPENSEARCH_PASS:-${INDEXER_PASSWORD:-SecretAdmin123!}}" \
+    -X POST "https://localhost:9200/_plugins/_alerting/monitors" \
     -H "Content-Type: application/json" \
     -d '{
       "name": "Init-Monitor",
@@ -82,8 +83,9 @@ PurpleForge is built as a modular, containerized security lab combining SIEM, SO
 Run these checks to validate the pipeline:
 
 ```bash
-# 1. Verify OpenSearch Cluster Health
-curl -s http://localhost:9200/_cluster/health?pretty
+# 1. Verify OpenSearch Cluster Health (default secured Compose profile)
+curl -k -u "${OPENSEARCH_USER:-${INDEXER_USERNAME:-admin}}:${OPENSEARCH_PASS:-${INDEXER_PASSWORD:-SecretAdmin123!}}" \
+  https://localhost:9200/_cluster/health?pretty
 
 # 2. Check Container Status & Resource Usage
 docker ps

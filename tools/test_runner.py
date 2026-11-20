@@ -37,8 +37,8 @@ TESTS_TN_DIR = os.path.join(PROJECT_ROOT, "tests", "tn")
 PIPELINE_PATH = os.path.join(PROJECT_ROOT, "pipelines", "wazuh_opensearch.yml")
 
 OPENSEARCH_URL = os.environ.get("OPENSEARCH_URL", "https://localhost:9200")
-OPENSEARCH_USER = os.environ.get("OPENSEARCH_USER", "admin")
-OPENSEARCH_PASS = os.environ.get("OPENSEARCH_PASS", "admin")
+OPENSEARCH_USER = os.environ.get("OPENSEARCH_USER", os.environ.get("INDEXER_USERNAME", "admin"))
+OPENSEARCH_PASS = os.environ.get("OPENSEARCH_PASS", os.environ.get("INDEXER_PASSWORD", "SecretAdmin123!"))
 
 INDEX_TP = "test-tp"
 INDEX_TN = "test-tn"

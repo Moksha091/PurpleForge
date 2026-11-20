@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T08:07:46.000Z",
+  "timestamp": "2026-11-20T12:38:53.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "c52d424f-6957-4cab-9e0c-5a97e65d7d3f",
+  "id": "bece4578-f51d-4d54-b576-1120457af668",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T08:07:46.000Z",
-        "eventRecordID": "88715"
+        "systemTime": "2026-11-20T12:38:53.000Z",
+        "eventRecordID": "1939"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\svchost.exe",
