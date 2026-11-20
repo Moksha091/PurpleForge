@@ -17,6 +17,12 @@ PurpleForge is built as a modular, containerized security lab combining SIEM, SO
 - **DFIR-IRIS (`purpleforge-iris-web`, `purpleforge-iris-worker`, `purpleforge-iris-db`, `purpleforge-iris-rabbitmq`):** Incident response management platform, background worker, and supporting services.
   - **Port:** Web UI on `http://localhost:8080` (mapped to the app's HTTP port `8000`).
 
+The Wazuh Dashboard API account must match an account configured in the Wazuh Manager.
+The stock manager image seeds `wazuh-wui` with its default lab password; changing
+`WAZUH_API_PASSWORD` in `docker/.env` alone does not change the manager-side account.
+For non-lab deployments, configure a unique API password on the manager and use the same
+value in the Dashboard configuration.
+
 ---
 
 ## 2. Current Environment Status & Progress
@@ -75,6 +81,10 @@ PurpleForge is built as a modular, containerized security lab combining SIEM, SO
       "triggers": []
     }'
   ```
+
+### Issue C: Wazuh Dashboard API Unavailable or Alerts Pattern Missing
+- **API connection failure:** Confirm the Dashboard API username and password match a Wazuh Manager API user. The password variable configures the Dashboard connection only; it does not provision or reset the manager-side user.
+- **Missing `wazuh-alerts-*` template:** Check the manager's Filebeat logs for TLS errors. The Compose lab uses a self-signed Indexer certificate; Filebeat is configured to skip certificate verification on the private Compose network. Restart the manager after changing `enable_archives.sh` so Filebeat loads the updated output configuration.
 
 ---
 

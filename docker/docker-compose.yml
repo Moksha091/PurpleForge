@@ -72,10 +72,9 @@ services:
       - "1515:1515"      # Wazuh Auth registration
       - "55000:55000"    # Wazuh REST API
     environment:
-      - "INDEXER_URL=https://172.28.0.10:9200"
+      - "INDEXER_URL=https://wazuh.indexer:9200"
       - "INDEXER_USERNAME=${INDEXER_USERNAME:-admin}"
       - "INDEXER_PASSWORD=${INDEXER_PASSWORD:-SecretAdmin123!}"
-      - "FILEBEAT_SSL_VERIFICATION=false"
     mem_limit: 1200m
     volumes:
       - wazuh_manager_data:/var/ossec/data
@@ -104,7 +103,7 @@ services:
       - "INDEXER_PASSWORD=${INDEXER_PASSWORD:-SecretAdmin123!}"
       - "WAZUH_API_URL=https://172.28.0.11:55000"
       - "API_USERNAME=${WAZUH_API_USER:-wazuh-wui}"
-      - "API_PASSWORD=${WAZUH_API_PASSWORD:-SecretWazuh123!}"
+      - "API_PASSWORD=${WAZUH_API_PASSWORD:-wazuh-wui}"
     mem_limit: 768m
     networks:
       secops_net:
