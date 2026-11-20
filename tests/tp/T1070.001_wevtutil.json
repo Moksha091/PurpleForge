@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T08:07:46.000Z",
+  "timestamp": "2026-11-20T12:38:53.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "b83dbb8f-4ad8-4088-bfb6-3ed860663eba",
+  "id": "b59508e9-5b72-41d2-bb4e-4d719783467c",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T08:07:46.000Z",
-        "eventRecordID": "25190"
+        "systemTime": "2026-11-20T12:38:53.000Z",
+        "eventRecordID": "99636"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\wevtutil.exe",

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T08:07:46.000Z",
+  "timestamp": "2026-11-20T12:38:53.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "63186130-1b8c-4208-84a6-5c6cb1cd72e9",
+  "id": "c3826544-c56d-4fdd-a1c7-943cac14eb2c",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "System",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T08:07:46.000Z",
-        "eventRecordID": "50718"
+        "systemTime": "2026-11-20T12:38:53.000Z",
+        "eventRecordID": "17863"
       },
       "eventdata": {
         "image": "C:\\Windows\\PSEXESVC.exe",

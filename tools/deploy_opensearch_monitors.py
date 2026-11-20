@@ -27,8 +27,8 @@ RULES_DIR = os.path.join(PROJECT_ROOT, "rules")
 PIPELINE_PATH = os.path.join(PROJECT_ROOT, "pipelines", "wazuh_opensearch.yml")
 
 OPENSEARCH_URL = os.environ.get("OPENSEARCH_URL", "https://localhost:9200")
-OPENSEARCH_USER = os.environ.get("OPENSEARCH_USER", "admin")
-OPENSEARCH_PASS = os.environ.get("OPENSEARCH_PASS", "admin")
+OPENSEARCH_USER = os.environ.get("OPENSEARCH_USER", os.environ.get("INDEXER_USERNAME", "admin"))
+OPENSEARCH_PASS = os.environ.get("OPENSEARCH_PASS", os.environ.get("INDEXER_PASSWORD", "SecretAdmin123!"))
 SHUFFLE_WEBHOOK_URL = os.environ.get("SHUFFLE_WEBHOOK_URL", "https://shuffle.corp.purpleforge.local:3443/api/v1/hooks/webhook_placeholder")
 
 TARGET_INDEX = "wazuh-archives-*"

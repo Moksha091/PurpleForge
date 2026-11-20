@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T08:07:46.000Z",
+  "timestamp": "2026-11-20T12:38:53.000Z",
   "rule": {
     "level": 0,
     "description": "Test event"
@@ -12,7 +12,7 @@
   "manager": {
     "name": "wazuh-manager"
   },
-  "id": "e59f4ef3-f460-4d77-bf85-819d7d2fa9ed",
+  "id": "ce6cbd5e-4b11-4e16-9669-03ea61b65a09",
   "data": {
     "win": {
       "system": {
@@ -20,8 +20,8 @@
         "channel": "Microsoft-Windows-Sysmon/Operational",
         "computer": "WS01.corp.purpleforge.local",
         "providerName": "Microsoft-Windows-Sysmon",
-        "systemTime": "2026-10-25T08:07:46.000Z",
-        "eventRecordID": "8536"
+        "systemTime": "2026-11-20T12:38:53.000Z",
+        "eventRecordID": "30255"
       },
       "eventdata": {
         "image": "C:\\Windows\\System32\\sc.exe",
