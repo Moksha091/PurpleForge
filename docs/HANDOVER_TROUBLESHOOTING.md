@@ -20,6 +20,8 @@ PurpleForge is built as a modular, containerized security lab combining SIEM, SO
 The Wazuh Dashboard API account must match an account configured in the Wazuh Manager.
 The stock manager image seeds `wazuh-wui` with its default lab password; changing
 `WAZUH_API_PASSWORD` in `docker/.env` alone does not change the manager-side account.
+Set `WAZUH_API_URL` to the manager host only (for example, `https://wazuh.manager`);
+the Dashboard configuration supplies port `55000` separately.
 For non-lab deployments, configure a unique API password on the manager and use the same
 value in the Dashboard configuration.
 

@@ -101,7 +101,7 @@ services:
       - "INDEXER_URL=https://172.28.0.10:9200"
       - "INDEXER_USERNAME=${INDEXER_USERNAME:-admin}"
       - "INDEXER_PASSWORD=${INDEXER_PASSWORD:-SecretAdmin123!}"
-      - "WAZUH_API_URL=https://172.28.0.11:55000"
+      - "WAZUH_API_URL=https://wazuh.manager"
       - "API_USERNAME=${WAZUH_API_USER:-wazuh-wui}"
       - "API_PASSWORD=${WAZUH_API_PASSWORD:-wazuh-wui}"
     mem_limit: 768m
