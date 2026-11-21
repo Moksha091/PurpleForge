@@ -1,0 +1,141 @@
+%-------------------------
+% ATS-friendly DevOps / DevSecOps resume — Vemula Moksha
+% Engine: pdfLaTeX (Overleaf). Single column.
+%-------------------------
+\documentclass[letterpaper,10.5pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage[english]{babel}
+\input{glyphtounicode}
+\usepackage[T1]{fontenc}
+
+% Academic serif font (Harvard style typography)
+\usepackage{tgtermes}
+
+\pagestyle{empty}
+% Calibrated margins to lock onto 1 full page without overflow
+\addtolength{\oddsidemargin}{-0.55in}
+\addtolength{\evensidemargin}{-0.55in}
+\addtolength{\textwidth}{1.1in}
+\addtolength{\topmargin}{-0.6in}
+\addtolength{\textheight}{1.2in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+\pdfgentounicode=1
+
+% Clean section spacing
+\titleformat{\section}{\vspace{-5pt}\scshape\raggedright\large\bfseries}{}{0em}{}[\color{black}\titlerule\vspace{-3pt}]
+
+% Comfortable bullet spacing (un-cramped)
+\newcommand{\resumeItem}[1]{\item\small{#1\vspace{-1pt}}}
+
+\newcommand{\resumeSubheading}[4]{\vspace{1pt}\item
+  \textbf{#1}\hfill{\small #2}\\
+  \textit{\small #3}\hfill{\textit{\small #4}}\vspace{-5pt}}
+
+% Keeps visual separation between projects (3pt before, -4pt after)
+\newcommand{\resumeProjectHeading}[2]{\vspace{3pt}\item
+  \small #1\hfill\small #2\vspace{-4pt}}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in,label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}\vspace{-4pt}}
+
+% Keeps 1pt separation between bullets so projects remain easy to scan
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.20in,itemsep=1pt,topsep=2pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-3pt}}
+
+\newcommand{\skillrow}[2]{\item[]\small\textbf{#1:} #2}
+
+\begin{document}
+
+\begin{center}
+  {\Huge\scshape\textbf{Vemula Moksha}}\\[4pt]
+  {\normalsize\scshape Junior DevOps \& DevSecOps Engineer \textbullet\ CI/CD Automation \& Cloud Infrastructure}\\[3pt]
+  \small
+  Hyderabad, India\;$|$\;+91\,9014690146\;$|$\;
+  \href{mailto:v.moksha3981@gmail.com}{v.moksha3981@gmail.com}\;$|$\;
+  \href{https://linkedin.com/in/vemula-moksha}{linkedin.com/in/vemula-moksha}\;$|$\;
+  \href{https://github.com/Moksha091}{github.com/Moksha091}\;$|$\;
+  \href{https://vemula-moksha-portfolio1.vercel.app}{vemula-moksha-portfolio1.vercel.app}
+\end{center}
+\vspace{-4pt}
+
+\section{Summary}
+\small
+Junior DevOps/DevSecOps engineer with hands-on experience building GitHub Actions checks, operating Docker Compose labs with Wazuh/OpenSearch, and troubleshooting Linux services and log pipelines. Skilled in Linux, Docker, AWS EC2, Python/Bash, Git, and CI/CD, with additional frontend development experience.
+
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0.15in, label={}, itemsep=1.5pt, topsep=2pt]
+  \skillrow{Linux \& Networking}{Ubuntu Server, TCP/IP, DNS, HTTP/S, SSH, Tailscale, Kali Linux, Nmap, Wireshark}
+  \skillrow{Cloud \& Containers}{AWS (EC2), GCP fundamentals, Docker, Docker Compose, Hyper-V Virtualization}
+  \skillrow{CI/CD \& Automation}{GitHub Actions, Git, CI/CD Pipeline Gating, Automated Testing, Detection-as-Code, Shuffle SOAR}
+  \skillrow{Scripting \& Backend}{Python, Bash, PowerShell, SQL, REST APIs, Custom CLI Tooling}
+  \skillrow{Observability \& Logging}{OpenSearch (Indexing, Alerting, Dashboards), Wazuh, JSON Log Forwarding, Sysmon, Telemetry Triage}
+  \skillrow{DevSecOps}{Secrets \& Credential Hardening, OWASP Top 10, Automated Vulnerability \& Attack Surface Discovery}
+  \skillrow{Frontend \& UI}{React, Next.js, JavaScript, Application Scaffolding}
+\end{itemize}
+\vspace{-4pt}
+
+\section{Experience}
+\resumeSubHeadingListStart
+  \resumeSubheading{Frontend Developer \& UI/UX Intern}{Oct 2025 -- Oct 2026}{Soulax}{Hyderabad, India}
+  \resumeItemListStart
+    \resumeItem{Built the core React application scaffolding and modular component architecture for an enterprise Salesforce migration, standardizing team deployment workflows.}
+    \resumeItem{Redesigned the frontend architecture for the Svarupa client platform, improving build consistency and user workflow efficiency.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{DevOps \& Infrastructure Projects}
+\resumeSubHeadingListStart
+  \resumeProjectHeading{\textbf{\href{https://github.com/Moksha091/PurpleForge}{PurpleForge} --- Detection-as-Code \& Containerized SecOps Lab} $|$ \emph{Sigma, PySigma, Wazuh, OpenSearch, Docker}}{2026}
+  \resumeItemListStart
+    \resumeItem{Created 30 Sigma detections across 8 ATT\&CK tactics and 26 techniques, with a custom PySigma pipeline mapping Windows events to Wazuh/OpenSearch fields.}
+    \resumeItem{Built an OpenSearch-backed TP/TN fixture gate; all 30 rules passed locally against authored positive events and a shared 30-event benign corpus.}
+    \resumeItem{Added GitHub Actions for rule linting, fixture tests, and ATT\&CK Navigator artifacts; monitor deployment is non-blocking and not yet validated end-to-end.}
+    \resumeItem{Configured a Docker Compose lab with Wazuh, OpenSearch, Shuffle, and DFIR-IRIS; fixed Filebeat archive ingestion and Dashboard API connectivity.}
+    \resumeItem{Developed Shuffle workflow assets and Python modules for threat-intelligence enrichment and heuristic risk scoring; live provider and end-to-end response integrations remain unverified.}
+  \resumeItemListEnd
+
+  \resumeProjectHeading{\textbf{Cloud Telemetry \& Honeypot Infrastructure} $|$ \emph{AWS EC2, Docker, Wazuh, Hyper-V}}{May 2025}
+  \resumeItemListStart
+    \resumeItem{Provisioned and hardened a public AWS EC2 instance running a containerized Cowrie service, maintaining 100\% uptime across a 15-day deployment.}
+    \resumeItem{Configured real-time JSON log-shipping pipelines from AWS containers into a centralized Ubuntu Wazuh cluster to ingest $\sim$3,000 live network events.}
+    \resumeItem{Deployed a 3-VM local Hyper-V cluster to test cross-node agent communication, SSH hardening, and automated alert triggers.}
+  \resumeItemListEnd
+
+  \resumeProjectHeading{\textbf{Hunter-Seeker --- Automated Infrastructure Discovery} $|$ \emph{Python, REST APIs, Bash}}{Personal Project}
+  \resumeItemListStart
+    \resumeItem{Developed Python CLI scripts querying the Shodan API to automate asset discovery, inventory public IPs, and audit exposed ports.}
+  \resumeItemListEnd
+
+  \resumeProjectHeading{\textbf{Application Security \& Database Hardening --- E-Voting App} $|$ \emph{Python, SQL}}{Academic Team Project}
+  \resumeItemListStart
+    \resumeItem{Audited application backend and data-in-transit pipelines, refactoring authentication logic to enforce cryptographic password hashing in SQL storage.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Certifications \& Training}
+\begin{itemize}[leftmargin=0.15in, label={$\bullet$}, itemsep=1.5pt, topsep=2pt]
+  \small
+  \item \textbf{Google Cloud Skills Boost:} Cloud Computing Principles; Cloud Risk Management; Unified SecOps \hfill \textit{Mar--Apr 2026}
+  \item \textbf{Blue Team Junior Analyst (BTJA)} --- Security Blue Team \hfill \textit{Apr 2026 $|$ ID: 362704782}
+\end{itemize}
+\vspace{-4pt}
+
+\section{Education}
+\resumeSubHeadingListStart
+  \resumeSubheading{B.Tech, Computer Science}{2022 -- 2026}{Neil Gogte Institute of Technology}{Hyderabad, India}
+  \resumeItemListStart
+    \resumeItem{CGPA: 7.24 $|$ Coursework: Cloud Computing, Operating Systems, Computer Networks, Network Security}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\end{document}
